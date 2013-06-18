@@ -1,0 +1,128 @@
+canvas {	
+       border: 1px solid black;
+}
+
+.btn.active {  
+   color: #ffffff;
+   background-color: #0000ff; 
+}
+
+.btn.active.btn-correct {  
+  background-color: #00ff00;
+}
+
+.btn.active.btn-incorrect {  
+   background-color: #bd362f;
+}
+
+td.nogap, input.nogap {
+   padding: 0px 0px;
+   margin-bottom: 0px;
+}
+
+.hero-unit h3 {
+  margin-bottom: 0;
+  font-size: 40px;
+  line-height: 1;
+  letter-spacing: -1px;
+  color: inherit;
+  text-align: center;
+}
+
+.circuit {
+     float: left;
+     margin: 0px 0px 0px 0px
+}
+.solution {
+     float: left;
+     margin: 0px 0px 0px 0px
+}
+
+.expressionbox {
+     margin: 12px 0px 0px 0px
+}
+
+.expression-given {
+     float: left;
+     margin: 0px 15px 0px 0px;
+}
+
+.inline-div-block {
+  display: inline-block;
+}
+
+.inline-div {
+  display: inline-block;
+  margin: 0 .1em 0 .1em;	
+  vertical-align: top;
+  text-align: center;
+  padding: 10px 7px 0px 7px;
+  margin-bottom: 0px;
+}
+
+.inline-div-nopadwidth {
+  display: inline-block;
+  margin: 0 .1em 0 .1em;	
+  vertical-align: top;
+  text-align: center;
+  padding: 10px 0px 0px 0px;
+  margin-bottom: 0px;
+}
+
+.no-left-right-padding {
+    padding-left: 0px;
+    padding-right: 0px;
+}
+
+#youtubemodal {
+  width: 610px;
+}
+
+.submit-space {
+     margin: 8px 5px;
+}
+
+.arithmetic-div { 
+     padding: 0px 10px;
+     text-align:right; 
+}
+
+.underline {text-decoration: underline;}
+
+.no-display {
+  display: none;
+}
+
+.numeric {
+    text-align: right;
+}
+
+#correct {
+  font-size: 20px;
+  color: green;
+  text-align: center;
+}
+
+.align-top {
+  vertical-align: top;
+}
+
+.vertical {
+  writing-mode:tb-rl;
+  display:block;
+  margin: 15px 0px 0px 0px;
+  -moz-transform: rotate(-90deg);
+  -webkit-transform: rotate(-90deg);
+  -o-transform: rotate(-90deg);
+  transform: rotate(-90deg);
+}
+
+.note {
+     font-style:italic;      
+}
+
+#score {
+     margin: 20px 20px 20px 20px;
+     font-size: 15px;
+}
+

@@ -1,0 +1,19 @@
+.DS_Store
+Icon?
+
+# Thumbnails
+._*
+
+# Compiled python files
+*.pyc
+
+# TextMate Extras
+*.tmproj
+.ftpssh_settings
+
+# Files that might appear on external disk
+.Spotlight-V100
+.Trashes
+
+# Vim swap files
+*.swp

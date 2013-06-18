@@ -1,0 +1,58 @@
+{% extends "boilerplate.html" %}
+
+{% block bodyblock %}
+  <div class="inline-div">
+    <h2>What is the value of y?</h2>
+    <span class="int32">uint32_t</span><span> x = {{ question.operand }};</span> <br />
+    {% if submit.level == 1 %}
+      <p>x = x {{ question.op2|e }} {{ question.operand2 }};</p>
+    {% endif %}
+    {% if question.operation == "rshift" %}
+      <span class="int32">uint32_t</span> 
+      <span> y = (x {{ question.ops[0]|e }} {{ question.shamt }}) {{ question.ops[1]|e }} {{ question.mask }};</span> <br />
+    {% else %}
+      <span class="int32">uint32_t</span>
+      <span> y = x {{ question.ops[1]|e }} ({{ question.mask }} {{ question.ops[0]|e }} {{ question.shamt }});</span> <br />
+    {% endif %}
+    <b>Answer in hex: 0x</b><input type="text" class="nogap numeric" id="answer" autocomplete="off" />
+    <button id="submit" class="btn btn-large disabled">Submit</button> <br />
+    <p id="correct">&nbsp;</p>
+    <span id="score"></span>
+  </div>
+{% endblock bodyblock %}
+
+{% block jsblock %}
+{{ super() }}
+<script src="/js/numeric.js"></script>
+<script type="text/javascript">
+  $(document).ready(function() {        
+    validate_h($('#answer'));
+    checkSubmit();
+    $('.int32').popover({
+      trigger: 'hover',
+      html: true,
+      delay: {hide: 3000},
+      content: '<a href="http://lmgtfy.com/?q=uint32_t" target="_blank">Definition of uint32_t</a>'
+    });
+    $('.int32').mouseover(function() {
+      $(this).popover('show');
+    });
+  });
+
+  function canSubmit() {
+    return ($('#answer').val().length > 0);
+  }
+
+  function get_answer() {
+    return $('#answer').val();
+  }
+
+  function correct(json_rdata) {
+    $('#correct').html('Answer: ' + json_rdata['wanted']);
+    var real_answer = '0x' + get_answer();
+    if (json_rdata['wanted'] != real_answer) {
+        $('#correct').css('color', 'red');
+    }
+  }
+</script>
+{% endblock jsblock %}

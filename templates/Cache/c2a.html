@@ -1,0 +1,61 @@
+{% extends "boilerplate.html" %}
+{% block bodyblock %}
+<div class="inline-div" style="text-align: left">
+    For the code below, what are the first {{ question.num_accesses }} addresses accessed?<br>
+    You may assume that a <tt>char</tt> is 1 byte, a <tt>short</tt> is 2 bytes, an <tt>int</tt> is 4 bytes and a <tt>double</tt> is 8 bytes.<br>
+    You may also assume that expressions get evaluated in the order they're in the code - i.e. <tt>b * c</tt> accesses <tt>b</tt> before <tt>c</tt>.<br>
+    Remember that for structs, each element is aligned to an address that's a multiple of its size, and the size of a struct is a multiple of the size of its largest element.<br>
+    <pre style="display: inline-block">{{- question.code -}}</pre>
+    <div style="display: inline-block; vertical-align: top">
+        {% for i in range(question.num_accesses) %}
+            <div>
+                <tt>0x<input class="nogap address" type="text" id="address{{- i -}}" maxlength="8" style="font-family: monospace; width: 5em">
+                <span id="wanted{{- i -}}"></span></tt>
+            </div>
+        {% endfor %}
+        <br><button id="submit" class="btn btn-large disabled">Submit</button>
+        <div id="score"></div>
+    </div>
+</div>
+{% endblock %}
+{% block jsblock %}
+<script src="/js/numeric.js"></script>
+<script>
+
+    function get_answer() {
+        answer = [];
+        $('.address').each(function(i, a) {
+            answer.push(a.value);
+        });
+        return JSON.stringify(answer);
+    }
+
+    function correct(json_rdata) {
+        wanted = JSON.parse(json_rdata['wanted']);
+        for (var i = 0; i < wanted.length; ++i) {
+            $('#wanted' + i).html('0x' + wanted[i].toString(16));
+            var input = $('#address' + i);
+            if (wanted[i] === parseInt(input.val(), 16)) {
+                input.css('background-color', '#0f0');
+            } else {
+                input.css('background-color', '#f44');
+            }
+        }
+    }
+
+    function canSubmit() {
+        complete = true;
+        $('.address').each(function(i, a) {
+            if (a.value.length !== 8) {
+                complete = false;
+            }
+        });
+        return complete;
+    }
+
+    $(document).ready(function() {	      
+        validate_h($('.address'));
+        checkSubmit();
+    });
+</script>
+{% endblock %}

@@ -1,0 +1,26 @@
+- when it randomizes type of question (e.g., arithmetic c+) student grade is stored based on resulting random type, not the asked for question type.  This is relatively straightforward to fix, make sure the randomization is deterministic and then return the problem type is c+. 
+
+
+
+The main page doesn't have a link for verilog to digital circuits problems.
+
+The digital circuit constructor is seriously cool, although:
+
+In Chrome, when a new problem is loaded, the gates on the top don't appear until you click somewhere valid within the canvas. In Firefox, this only happens when you clear the cache and then reload.
+
+I can't figure out a way to delete gates, although having extra gates not connected to anything seems to be pretty harmless.
+
+While testing the extra gate thing, however, I ran into some weirdness - check out the first two attached images. (I can't insert images inline unless I enable it through Google Labs, and I apparently can't access Labs in my illinois.edu account ... sigh.)
+
+For circuits which would just be x or y connected directly to the output, the solution has a buffer. I don't know if it's needed, but we definitely don't have the option to insert it in our own solution if it is.
+
+Gates' click areas are a bit too extended on the left, i.e. clicking ~25 pixels to the left of the left border of an AND gate still drags the gate around - I noticed this because I placed a gate too close to the inputs and ended up dragging the gate instead of creating a connection from the input to the gate.
+
+For digital logic problems in which you have to convert to digital logic or expressions, the provided solutions aren't always minimal.
+
+Perhaps it would be good to point out that you don't need to explicitly use * to indicate AND in expressions - just running expressions together works fine.
+
+If you have a syntactically incorrect expression, you don't get any feedback when you click the Submit button.
+
+You should probably provide some visual feedback for the AJAX that's going on (when submit is clicked).
+

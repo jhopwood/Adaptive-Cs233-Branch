@@ -1,0 +1,86 @@
+{% extends "boilerplate.html" %}
+{% block bodyblock %}
+  {% if submit.question_type == "m2b" %}
+    <div class="inline-div">Convert</div>
+    <div class="inline-div well">
+      <h4>{{- question.mips -}}</h4>
+      <p>Assembly Language</p>
+    </div>
+    <div class="inline-div">to</div>
+    <div class="inline-div well">
+      <input type="text" id="answer" style="width:275px"/>
+      <p>Machine Language</p>
+      <p><a href="http://www.ece.cmu.edu/~ece447/s13/lib/exe/fetch.php?media=mips_reference_data.pdf">MIPS Green Sheet</a></p>
+      <p>(All "dont care"s should be 0)</p>
+      <p id="correct"></p>
+    </div>
+  {% else %}
+    <div class="inline-div">Convert</div>
+    <div class="inline-div well">
+      <h4>{{- question.binary -}}</h4>
+      <p>Machine Language</p>
+    </div>
+    <div class="inline-div">to</div>
+    <div class="inline-div well">
+      <input type="text" id="answer"/>
+      <p>Assembly Language</p>
+      <p><a href="http://www.ece.cmu.edu/~ece447/s13/lib/exe/fetch.php?media=mips_reference_data.pdf">MIPS Green Sheet</a></p>
+      <p id="correct"></p>
+    </div>
+  {% endif %}
+  <div class="inline-div">
+    <button id="submit" class="btn btn-large disabled">Submit</button>
+    <span id="score"></span>
+  </div>
+{% endblock %}
+{% block jsblock %}
+  <script src="/js/numeric.js"></script>
+  <!--<script src="/js/jQuery.maskedinput.min.js"></script>-->
+  <!--
+  -->
+  <script src="/js/jquery.ui.core.js"></script>
+  <script src="/js/jquery.ui.widget.js"></script>
+  <script src="/js/jquery.ui.mask.js"></script>
+  <script type="text/javascript">
+    {% if submit.question_type == "m2b" %}
+      $(document).ready(function() {	      
+        $("#answer").mask({
+      {# Dont give them hints if the level is 1 #}
+      {% if submit.level == 1 %}
+          mask: "bbbbbbbb bbbbbbbb bbbbbbbb bbbbbbbb",
+      {# Otherwise, give them a small hint on what the binary is #}
+      {% else %}
+        {% if question.r_type %}
+          {#     opcode  rs    rt    rd   shamt  func #}
+          mask: "bbbbbb bbbbb bbbbb bbbbb bbbbb bbbbbb",
+        {% else %}
+          {#     opcode  rs    rt     immediate #}
+          mask: "bbbbbb bbbbb bbbbb bbbbbbbbbbbbbbbb",
+        {% endif %}
+      {% endif %}
+          definitions: {
+            'b': /[01]/
+          }
+        });
+      });
+      $("#answer").keyup(function() {
+        checkSubmit($("#answer").mask("valid"));
+      });
+    {% else %}
+      $(document).ready(function() {
+        $('#answer').keyup(function(e) { checkSubmit(); });
+      });
+    {% endif %}
+    
+    get_answer = function() {
+      return $("#answer").attr('value');
+    }
+    function correct(json_rdata) {
+      $("#correct").html("Answer: " + json_rdata["wanted"]);
+    }
+
+    function canSubmit() {
+       return $("#answer").attr('value').length > 0;
+    }
+  </script>
+{% endblock %}

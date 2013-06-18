@@ -1,0 +1,50 @@
+{% extends "boilerplate.html" %}
+{% block bodyblock %}
+  <div class="inline-div-block">
+{{question.description}}</br>
+<i>Assume 32-bit addresses</i></br>
+  <div class="inline-div well">
+    <div class="inline-div-block">
+    <p>Tag:</p>
+    <p><input class="nogap numeric" type="text" maxlength="5" id="tag"/></p>
+    </div>
+    <div class="inline-div-block">
+    <p>Index:</p>
+    <p><input class="nogap numeric" type="text" maxlength="5" id="index"/></p>
+    </div>
+    <div class="inline-div-block">
+    <p>Block Offset:</p>
+    <input class="nogap numeric" type="text" maxlength="5" id="offset"/></p> 
+    </div>
+    <p id="correct"></p>
+  </div>
+  <div class="inline-div">
+    <button id="submit" class="btn btn-large disabled">Submit</button>
+    <span id="score"></span>
+  </div>
+  </div>
+{% endblock %}
+{% block jsblock %}
+  <script src="/js/numeric.js"></script>
+  <script type="text/javascript">
+    $(document).ready(function() {	      
+      validate_d($('#tag'));
+      validate_d($('#index'));
+      validate_d($('#offset'));
+      $("#tag").width(80);	
+      $("#index").width(80);	
+      $("#offset").width(80);	
+    });
+    
+    get_answer = function() {
+      return $("#tag").attr('value') + ',' + $("#index").attr('value') + ',' + $("#offset").attr('value');
+    }
+    function correct(json_rdata) {
+      $("#correct").html("Answer: " + json_rdata["wanted"]);
+    }
+
+    function canSubmit() {
+       return ($("#tag").attr('value').length > 0) && ($("#index").attr('value').length > 0) && ($("#offset").attr('value').length > 0);
+    }
+  </script>
+{% endblock %}

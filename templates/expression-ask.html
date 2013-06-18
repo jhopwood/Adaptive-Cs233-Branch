@@ -1,0 +1,17 @@
+<div class="inline-div">
+  <p class="expressionbox">Enter a boolean expression, using the following characters 
+	  <span id="terminals">{{terminals}}(*+)'</span> 
+  </p>
+  <p><input type="text" id="expression"/></p>
+  <p id="correct"></p>
+  <p class="note">Note: there are many equivalent expressions</p>
+</div>
+
+    <script type="text/javascript">
+      get_answer = function() {
+        return document.getElementById("expression").value;
+      }
+      function correct(json_rdata) {
+        $("#correct").html("Answer: " + json_rdata["exp"]);
+      }
+    </script>

@@ -1,0 +1,11 @@
+{% if submit.problem_name == 'mux' %}
+    <input type="text" class="nogap numeric signal muxlevel{{- submit.level -}}" 
+    maxlength="1" data-output="Q" autocomplete="off" />
+    <p class="pcor pmuxlevel{{- submit.level -}}" data-output="Q"></p>
+{% else %}
+    {% for number in range(2 ** (submit.level + 1) - 1, -1, -1) %}
+      <input type="text" maxlength="1" data-output="Q{{number}}"
+      class="nogap numeric signal declevel{{ submit.level }} level{{ submit.level }}Q{{ number }}" autocomplete="off" />
+      <p class="pcor pdeclevel{{ submit.level }} level{{ submit.level }}Q{{ number }}" data-output="Q{{number}}"></p>
+    {% endfor %}
+{% endif %}

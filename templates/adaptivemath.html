@@ -1,0 +1,72 @@
+{% extends "adaptivebase.html" %}
+{% block questionblock %}
+{% if type == "get" %}
+<p>You must choose a dificulty level before the question will display. Your proficiency is {{ proficiency }}</p>
+{% else %}
+	<br>
+	<div class="inline-div">What is the answer to </div>
+	
+	<div class="inline-div well">
+	  <h4>{{- question.number1 -}}</h4>
+	  <p>decimal</p>
+	</div>
+	<div class="inline-div">+</div>
+	<div class="inline-div well">
+	  <h4>{{- question.number2 -}}</h4>
+	  <p>decimal</p>
+	</div>
+	<div class="inline-div well">
+		<p><input type="text" id="studentanswer"/></p>
+		<p><b>decimal</b></p>
+		<p id="correct"></p>
+	</div>
+	<div class="inline-div">
+		<button id="submit" class="btn btn-large disabled">Submit</button>
+		<span id="score"></span>
+	</div>
+	<br>
+	<br>
+{% endif %}
+{% endblock %}
+{% block jsblock %}
+<script src="/js/numeric.js"></script>
+  <script type="text/javascript">
+	 submit_url = "/adaptive/{{- submit.question_type -}}?student={{- submit.magic -}}";
+	 
+    $(document).ready(function() {	      
+		validate_decimal($('#studentanswer'));
+		$("#difficultyblock").width($("#questionblock").width());
+
+		//this allows me to send additional information with a press of the submission button
+		$("#submit").unbind('click');
+		$("#submit").click(function () {
+			if ($("#submit").hasClass("disabled")) { return; }
+			var answer = get_answer();
+			$.post(submission_url(), {answer: answer, button: {{- question.button -}} }, 
+			function(rdata) {
+			  json_rdata = JSON.parse(rdata)
+			  $("#submit").html("Try Another?");
+			  $("#submit").unbind('click');
+			  $("#submit").click(function() {
+				window.location.reload();
+			  });
+
+			  $("#score").html("Score: " + ((json_rdata["score"] === 100.0) ? '<span style="color:lime">100%</span>' : '<span style="color:red">' + json_rdata["score"] + '%</span>'));
+			  correct(json_rdata);
+			});
+		});
+    });
+	
+    
+    get_answer = function() {
+      return $("#studentanswer").attr('value');
+    }
+    function correct(json_rdata) {
+      $("#correct").html("Answer: " + json_rdata["wanted"]["answer"]);
+    }
+
+    function canSubmit() {
+       return $("#studentanswer").attr('value').length > 0;
+    }
+  </script>
+{% endblock %}

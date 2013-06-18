@@ -1,0 +1,93 @@
+{% extends "boilerplate.html" %}
+
+{% block bodyblock %}
+<!-- Build up the state table that we show -->
+<div class="inline-div">
+  <table class="table table-striped table-bordered table-condensed" 
+          id="statetable"
+          summary="Derive the next state equations">
+    <tbody>
+      <tr>
+        {% for header in question[4] %}
+        <th>{{header}}</th>
+        {% endfor %}
+      </tr>
+      {% for v in question[0] %}
+      <tr>
+        <td>{{ v[0][0] }}</td>
+        <td>{{ v[0][1] }}</td>
+        <td>{{ v[1] }}</td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+<!-- Show the inputs needed for submission -->
+<div class="inline-div">
+  <strong>For the input signal, use the symbol I in your expressions.</strong>
+  <p class="expressionbox">Enter a boolean expression, using the following characters 
+    <span id="terminals">{{- question[3] -}}(*+)'</span> 
+  </p>
+  {% for state in question[1] %}
+  <label for="next{{- state -}}">next{{ state }} expression:</label>
+  <input type="text" class="stateexp" id="next{{- state -}}" autocomplete="off" />
+  <p id="pnext{{- state -}}"></p>
+  {% endfor %}
+  <span id="score"></span><br />
+  <br />
+  <button id="submit" class="btn btn-large disabled">Submit</button>
+</div>
+{% endblock bodyblock %}
+
+{% block jsblock %}
+{{ super() }}
+<script type="text/javascript">
+  $(document).ready(function() { 
+    $(".stateexp").keypress(function(e) {
+      submitOnEnter(e);
+      setTimeout(function () { 
+         checkSubmit();
+       }, 30);
+      return characterLimit(e);
+    });
+   });
+
+  function canSubmit() {
+    var cs = true;
+    $(".stateexp").each(function() { 
+      cs = cs && ($(this).val().length > 0);
+     });
+    return cs;
+  }
+  
+  var submit_url = '/finite_state/{{- submit.question_type -}}?l={{- submit.level -}}&student={{- submit.magic -}}&problem_id={{- submit.problem_id -}}';
+
+  function get_outputs() {
+    var x = new Object();
+    $(".stateexp").each(function() {
+      x[$(this).attr('id')] = $(this).val();
+    });
+    return x;
+  }
+
+  function get_answer() {
+    return JSON.stringify(get_outputs());
+  }
+
+  function correct(json_rdata) {
+    var expressions = JSON.parse(json_rdata['wanted']);
+    var student_answers = get_outputs();
+    var scores = JSON.parse(json_rdata['scores'])
+    for (var expName in student_answers) {
+      $('#p' + expName).html("Correct answer: " + expressions[expName]);
+      if (scores[expName] < 100) {
+        $('#' + expName).css('color', 'red');
+      }
+      else {
+        $('#' + expName).css('color', 'green');
+      }
+    }
+  }
+</script>
+{% endblock jsblock %}
+

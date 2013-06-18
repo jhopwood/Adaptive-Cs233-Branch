@@ -1,0 +1,60 @@
+{% extends "boilerplate.html" %}
+{% block bodyblock %}
+    <div class="inline-div well"> Compute using<br>{{- length -}}-bit {{ type }} arithmetic </div>
+    <div class="inline-div arithmetic-div">
+      <span class="align-right">{{ first }}</span><br>
+      <span class="underline align-right">{{sign}} {{ second }}</span></br>
+      <input class="nogap numeric" maxlength="{{- length -}}" type="text" id="answer" onchange="validate(event)" onkeyup="validate(event)"/>
+
+      <p id="correct"></p>
+    </div>
+    <div id="decimal" class="inline-div arithmetic-div">
+      <span class="align-right"></span><br>
+      <span class="underline align-right"></span></br>
+      <span class="align-right"></span></br>
+    </div>
+    <div class="inline-div">
+      <div class="btn-group" data-toggle="buttons-radio">
+        <button id="overflow" class="btn" onclick="timerCheck()">Overflow</button>
+        <button id="noverflow" class="btn" onclick="timerCheck()">No overflow</button>
+      </div>  
+    </div>  
+    <div class="inline-div">
+      <button id="submit" class="btn btn-large">Submit</button>
+      <span id="score"></span>
+    </div>
+{% endblock %}
+{% block jsblock %}
+  <script src="/js/numeric.js"></script>
+  <script type="text/javascript">
+    submit_url = "/arithmetic/{{- submit.problem_type -}}?l={{- submit.level -}}&student={{- submit.magic -}}&problem_id={{- submit.problem_id -}}&score_type={{- submit.score_type -}}";
+    get_answer = function() {
+      return $("#answer").attr('value') + $(".active").attr("id")[0];
+    }
+    function correct(json_rdata) {
+      $("#correct").html("Answer: " + json_rdata["wanted"]).css('font-size','13.2px').css('text-align','right');
+      if (json_rdata["wanted"] != $("#answer").attr('value')) {
+         $("#correct").css('color','red');
+      }
+      $("#decimal").children()
+	   .first().text(json_rdata["first"]).css('color','green')
+           .next().next().text("{{sign}} "+json_rdata["second"]).css('color','green')
+           .next().next().text(json_rdata["third"]).css('color','green');
+      
+        $("#overflow").addClass(json_rdata["overflow"] ? 'btn-correct' : 'btn-incorrect');
+        $("#noverflow").addClass(!json_rdata["overflow"] ? 'btn-correct' : 'btn-incorrect');
+
+    }
+    $("#answer").width({{ 8.2*length }}).css('margin-right','-2px');
+    $(".inline-div").first().css('padding','10px');
+
+    $(document).ready(function() {	      
+      validate_b($('#answer'));
+      checkSubmit();
+    });
+
+    function canSubmit() {
+       return $("#answer").attr('value').length > 0 && $(".btn").hasClass("active");
+    }
+  </script>
+{% endblock %}

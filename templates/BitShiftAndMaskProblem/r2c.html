@@ -1,0 +1,48 @@
+{% extends "boilerplate.html" %}
+{% block bodyblock %}
+<div class="inline-div well">
+  <code>uint32_t x =</code>
+  <h4> 
+    {% for i in range(32) %}
+      a<sub><small>{{ 31 - i }}</small></sub>
+    {% endfor %}
+  </h4>
+  <code>uint32_t y =</code>
+  <h4>
+    {% for bit in question.expression_result.split("|") %}
+      {% if bit.startswith("a") %}
+        {{ bit[0] }}<sub><small>{{ bit[1:] }}</small></sub>
+      {% else %}
+        {{ bit }}
+      {% endif %}
+    {% endfor %}
+  </h4>
+  <p id="correct"></p>
+</div>
+<div class="inline-div">
+  <p>Write code for y:&nbsp;<input class="nogap" type="text" id="answer"/></p>
+  <pre>Vocabulary: ()<>|&x[0-9]
+    Hex numbers should have a 0x prefix. 
+    Binary should be prefixed with 0b</pre>
+  <button id="submit" class="btn btn-large disabled">Submit</button>
+  <span id="score"></span>
+</div>
+{% endblock %}
+{% block jsblock %}
+  <script type="text/javascript">
+    $(document).ready(function() {
+      $('#answer').keyup(function(e) { checkSubmit(); });
+    });
+
+    get_answer = function() {
+      return $("#answer").attr('value');
+    }
+    function correct(json_rdata) {
+      $("#correct").html("Answer: " + json_rdata["wanted"]);
+    }
+
+    function canSubmit() {
+       return $("#answer").attr('value').length > 0;
+    }
+  </script>
+{% endblock %}

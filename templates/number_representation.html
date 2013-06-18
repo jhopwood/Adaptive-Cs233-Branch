@@ -1,0 +1,40 @@
+{% extends "boilerplate.html" %}
+{% block bodyblock %}
+    <div class="inline-div">{{ prob_type }} from </div>
+    <div class="inline-div well"><h4> {{- given.value -}}<small>{{- given.base -}}</small> </h4>
+      <p>{{ given.string }}</p>
+    </div>
+    <div class="inline-div"> to </div>
+    <div class="inline-div well">
+      <h4><input class="nogap" maxlength="15" width="120" type="text" id="answer"/>
+      <small>{{- want.base -}}</small></h4>
+      <p>{{ want.string }}</p>
+      <p id="correct"></p>
+    </div>
+    <div class="inline-div">
+      <button id="submit" class="btn btn-large disabled">Submit</button>
+      <span id="score"></span>
+    </div>
+{% endblock %}
+{% block jsblock %}
+  <script src="/js/numeric.js"></script>
+  <script type="text/javascript">
+    $(document).ready(function() {	      
+        validate_{{- want.format -}}($('#answer'));
+    });
+
+
+    $("#answer").width({{ 8*15 }});
+    submit_url = "/number_representation/{{- submit.conversion_type -}}?l={{- submit.level -}}&student={{- submit.magic -}}&problem_id={{- submit.problem_id -}}";
+    get_answer = function() {
+      return $("#answer").attr('value');
+    }
+    function correct(json_rdata) {
+      $("#correct").html("Answer: " + json_rdata["wanted"]);
+    }
+
+    function canSubmit() {
+       return $("#answer").attr('value').length > 0;
+    }
+  </script>
+{% endblock %}

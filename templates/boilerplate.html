@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+
+<html lang="en">
+  <head>
+    <meta http-equiv="content-type" content="text/html; charset=UTF-8">
+    <title>An Expression!</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="A Digital Logic Problem Server">
+    <meta name="author" content="Craig Zilles">
+    {% block cssblock %}
+    <link href="/css/bootstrap.css" rel="stylesheet">
+    <link href="/css/bootstrap-responsive.css" rel="stylesheet">
+    <link href="/css/problemserver.css" rel="stylesheet">
+    {% endblock cssblock %}
+
+    <!-- Le HTML5 shim, for IE6-8 support of HTML5 elements -->
+    <!--[if lt IE 9]>
+      <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+  </head>
+
+  <body class="no-left-right-padding">
+  {% block youtubeblock %}{% endblock %}
+    <div class="inline-div-nopadwidth">
+      <img id="complete"  src="/img/{{-complete-}}.png">
+      <p class="vertical"><span id="best_score">{{-best_score-}}%</span></p>
+    </div>
+  {% block bodyblock %}{% endblock %}
+  </body>
+
+  <!-- Placed at the end of the document so the pages load faster -->
+  <script src="/js/jquery.js"></script>
+  <script src="/js/bootstrap.js"></script>
+  <script src="/js/problemserver.js"></script>
+  {% block jsblock %}{% endblock %}
+  <script type="text/javascript">
+    function submission_url() {
+      // If submit_url is defined, just return that (useful for backwards
+      // compatibility).
+      if(window.submit_url != undefined) return window.submit_url;
+      // Build the submission URL
+      var submit_url = location.pathname;
+      {# Since this file is sent through the template engine, these variables #}
+      {# will be set with the correct submit parameters #}
+      var level = "{{ submit.level }}";
+      var student = "{{ submit.magic }}";
+      var problem_id = "{{ submit.problem_id }}";
+      return submit_url + "?l="+level+"&student="+student+"&problem_id="+problem_id;
+    }
+  </script>
+</html>

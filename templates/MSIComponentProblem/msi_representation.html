@@ -1,0 +1,73 @@
+{% extends "boilerplate.html" %}
+
+{% block cssblock %}
+{{ super() }}
+<link href="/css/msi-representation.css" rel="stylesheet">
+{% endblock cssblock %}
+
+{% block bodyblock %}
+  <div class="inline-div" id="drawing">
+    <canvas id="mux-decoder" width="400" height="400">Please get an HTML 5 compliant browser</canvas>
+    {% include "MSIComponentProblem/msi_inputs.html" %}
+  </div>
+  <div class="inline-div">
+    <h3>Please fill in the signals in the diagram.</h3>
+    <h4>Assume that multiplexers are always enabled.</h4>
+    <p id="correct">&nbsp;</p>
+    <span id="score"></span><br />
+    <button id="submit" class="btn btn-large disabled">Submit</button>
+  </div>
+{% endblock %}
+
+{% block jsblock %}
+{{ super() }}
+<script src="/js/msi-correct.js"></script>
+<script src="/js/msi-ask.js"></script>
+<script src="/js/numeric.js"></script>
+<script type="text/javascript">
+    $(document).ready(function() {        
+        preloadImages();
+        validate_b($('.signal'));
+        checkSubmit();
+    });
+
+    var submit_url = '/msi_component/{{- submit.question_type -}}?l={{- submit.level -}}&student={{- submit.magic -}}&problem_id={{- submit.problem_id -}}';
+
+    var ptype = '{{- submit.question_type -}}';
+    var level = {{ submit.level }};
+    var qdata = {{ question|safe }}
+    drawMuxOrDec(ptype, level, qdata);
+
+    function canSubmit() {
+      var submit = true;
+      $(".signal").each(function() {
+        submit = submit && ($(this).val().length > 0);
+      });
+      return submit;
+    }
+
+    function get_answer() {
+      if (ptype == 'mux') {
+        return $("input[data-output='Q']").first().val();
+      }
+      else {
+        var sum = 0;
+        $(".signal").each(function() {
+          // Find the exponent from the second character in 
+          // the id
+          var exp = parseInt($(this).attr('data-output').substring(1));
+          sum += Math.pow(2, exp) * parseInt($(this).val());
+        });
+        return sum;
+      } 
+    }
+
+    function correct(json_rdata) {
+        $('#correct').html('Answer: ' + json_rdata['wanted']);
+        if (json_rdata['wanted'] != get_answer()) {
+            $('#correct').css('color', 'red');
+        }
+        fillInBits(json_rdata['wanted'], ptype, level);
+    }
+</script>
+{% endblock %}

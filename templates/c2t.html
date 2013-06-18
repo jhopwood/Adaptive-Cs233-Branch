@@ -1,0 +1,20 @@
+{% extends "base-logic.html" %}
+
+{# THE LEFT BLOCK IS A CIRCUIT #}
+{% block lblock %}
+{% include "circuit-given.html" %}
+{% endblock %}
+
+{# THE RIGHT BLOCK IS AN EXPRESSION #}
+{% block rblock %}
+{% include "truthtable-ask.html" %}
+{% endblock %}
+
+{% block jsblock %}
+{{ super() }}
+<script type="text/javascript">
+{% include "circuit-given.js" %}
+{% include "truthtable-ask.js" %}
+</script>
+{% endblock %}
+

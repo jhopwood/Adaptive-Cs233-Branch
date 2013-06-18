@@ -1,0 +1,25 @@
+@import "msi-decoder.css";
+@import "msi-mux.css";
+
+#drawing
+{
+  height: 600px;
+  position: relative;
+  width: 400px;
+  text-align: left;
+}
+#mux-decoder
+{
+  height: 100%;
+  width: 100%;
+}
+.signal
+{
+  position: absolute;
+  width: 20px;
+}
+.pcor
+{
+  position: absolute;
+  display: inline;
+}

@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+
+<html lang="en">
+  <head>
+    <meta http-equiv="content-type" content="text/html; charset=UTF-8">
+    <title>An Architecture Problem Server!</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="A Digital Logic Problem Server">
+    <meta name="author" content="Craig Zilles">
+
+    <link href="../css/bootstrap.css" rel="stylesheet">
+    <link href="../css/bootstrap-responsive.css" rel="stylesheet">
+    <link href="../css/problemserver.css" rel="stylesheet">
+
+    <!-- Le HTML5 shim, for IE6-8 support of HTML5 elements -->
+    <!--[if lt IE 9]>
+      <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+
+  </head>
+
+  <body>
+  <div class="container">
+    <h2>Random Problems</h2>
+    <p><i>Each leftmost link will select a random difficulty</i></p>
+
+    <p>
+    <code><a href="/digital_logic/random?student=95">random digital logic problem</a></code>   
+    <code><a href="/digital_logic/random?l=0&student=96">easiest</a></code>
+    <code><a href="/digital_logic/random?l=1&student=97">easier</a></code>
+    <code><a href="/digital_logic/random?l=2&student=98">medium</a></code>
+    <code><a href="/digital_logic/random?l=3&student=99">harder</a></code>
+    <code><a href="/digital_logic/random?l=4&student=100">hardest</a></code>
+    </p>
+
+    <p>
+    <code><a href="/number_representation/random?student=91">random number representation problem</a></code>   
+    <code><a href="/number_representation/random?l=0&student=92">easy</a></code>
+    <code><a href="/number_representation/random?l=1&student=93">medium</a></code>  
+    <code><a href="/number_representation/random?l=2&student=94">harder</a></code>  
+    </p>
+
+    <p>
+    <code><a href="/arithmetic/random?student=111">binary arithmetic problem</a></code>   
+    <code><a href="/arithmetic/random?l=0&student=111">easy</a></code>   
+    <code><a href="/arithmetic/random?l=1&student=111">medium</a></code>   
+    <code><a href="/arithmetic/random?l=2&student=111">harder</a></code>   
+    </p>
+
+    <p>
+    <code><a href="/bitwise_logical/random?student=112">Bit-wise logical problem</a></code>   
+    <code><a href="/bitwise_logical/random?l=0&student=112">easy</a></code>   
+    <code><a href="/bitwise_logical/random?l=1&student=112">medium</a></code>   
+    <code><a href="/bitwise_logical/random?l=2&student=112">harder</a></code>   
+    </p>
+
+    <h2>Problem types</h2>
+    <p>all problems take a level and a student number (as large as you want) as arguments:  e.g., ?l=4&student=72</p>
+
+    <h4>Digital Logic</h4>
+    <p><i>levels range from 0 to 4</i></p>
+    <p>
+    <code><a href="/digital_logic/t2e?l=0&student=6790565">truth-table to expressions</a></code>
+    <code><a href="/digital_logic/e2t?l=0&student=6790565">expressions to truth-table</a></code>
+    <code><a href="/digital_logic/v2e?l=0&student=6790565">verilog to expressions</a></code>
+    <code><a href="/digital_logic/c2e?l=0&student=6790565">digital circuits to expressions</a></code></p>
+    <p>
+    <code><a href="/digital_logic/t2c?l=0&student=6790565">truth-table to digital circuits</a></code>
+    <code><a href="/digital_logic/e2c?l=0&student=6790565">expressions to digital circuits</a></code>
+    <code><a href="/digital_logic/v2t?l=0&student=6790565">verilog to truth tables</a></code>
+    <code><a href="/digital_logic/c2t?l=0&student=6790565">digital circuits to truth tables</a></code></p>
+    <p>
+    <code><a href="/digital_logic/v2c?l=0&student=6790565">verilog to digital circuits</a></code>
+    </p>
+
+    <h4>Number of Bits</h4>
+    <p><i>levels range from 0 to 2</i></p>
+    <p>
+    <code><a href="/number_bit_length/ul?l=0&student=6790588">unsigned length</a></code>
+    <code><a href="/number_bit_length/ux?l=0&student=6790588">unsigned max</a></code>
+    <code><a href="/number_bit_length/cl?l=0&student=6790588">two's complement length</a></code>
+    <code><a href="/number_bit_length/cx?l=0&student=6790588">two's complement max</a></code>
+    <code><a href="/number_bit_length/cn?l=0&student=6790588">two's complement min</a></code>
+    </p>
+
+    <h4>Number Representation</h4>
+    <p><i>levels range from 0 to 2</i></p>
+    <p><code><a href="/number_representation/b2d?l=0&student=6790565">unsigned binary-to-decimal conversion</a></code>
+    <code><a href="/number_representation/b2h?l=0&student=6790565">unsigned binary-to-hexadecimal conversion</a></code>
+    <code><a href="/number_representation/c2d?l=0&student=6790565">two's complement-to-decimal conversion</a></code>
+    <code><a href="/number_representation/h2d?l=0&student=6790565">hexadecimal-to-decimal conversion</a></code></p>
+    <p><code><a href="/number_representation/d2c?l=0&student=6790565">decimal-to-two's complement conversion</a></code>
+    <code><a href="/number_representation/h2b?l=0&student=6790565">hexadecimal-to-binary conversion</a></code>
+    <code><a href="/number_representation/d2b?l=0&student=6790565">decimal-to-unsigned binary conversion</a></code>
+    <code><a href="/number_representation/h2b?l=0&student=6790565">hexadecimal-to-unsigned binary conversion</a></code></p>
+
+    <h4>Zero/Sign Extension:</h4> 
+    <p><i>levels range from 0 to 2</i></p>
+    <p>
+    <code><a href="/number_representation/b2b?l=0&student=6790565">unsigned</a></code>
+    <code><a href="/number_representation/c2c?l=0&student=6790565">two's complement</a></code>
+    </p>
+
+    <h4>Binary Arithmetic (w/overflow):</h4> 
+    <p><i>levels range from 0 to 2</i></p>
+    <p>
+    <code><a href="/arithmetic/bpp+?l=0&student=6790566">unsigned addition</a></code>
+    <code><a href="/arithmetic/bpp-?l=0&student=6790566">unsigned subtraction</a></code>
+    <code><a href="/arithmetic/c+?l=0&student=6790566">two's complement addition</a></code>
+    <code><a href="/arithmetic/c-?l=0&student=6790566">two's complement subtraction</a></code>
+    </p>
+
+    <h4>Bit-wise Logical and Shifting:</h4> 
+    <p><i>levels range from 0 to 2</i></p>
+    <p>
+    <code><a href="/bitwise_logical/and?l=0&student=200">AND</a></code>   
+    <code><a href="/bitwise_logical/or?l=0&student=200">OR</a></code>   
+    <code><a href="/bitwise_logical/not?l=0&student=200">NOT</a></code>   
+    </p>
+
+    <h4>MSI Component Problems</h4>
+    <p><i>levels range from 0 to 2</i></p>
+    <p>
+    <code><a href="/msi_component/mux?l=0&student=200">multiplexer</a></code>
+    <code><a href="/msi_component/dec?l=0&student=200">decoder</a></code>   
+    </p>
+
+    <h4>Finite State Machine Problems</h4>
+    <p><i>levels range from 0 to 1</i></p>
+    <p>
+    <code><a href="/finite_state/nst?l=0&student=200">Next State Table</a></code>
+    </p>
+    
+    <h4>Register File Problems</h4>
+    <p><i>levels aren't really implemented yet</i></p>
+    <p>
+    <code><a href="/register_file/d2o?l=0&student=200">Timing diagram to output</a></code>
+    </p>
+    
+    <h4>MIPS Representation:</h4> 
+    <p><i>levels range from 0 to 1</i></p>
+    <p>
+    <code><a href="/mips_representation/m2b?student=6790566">Assembly Language (MIPS) to Machine Language</a></code>
+    <code><a href="/mips_representation/m2b?l=0&student=6790566">with hints</a></code>
+    <code><a href="/mips_representation/m2b?l=1&student=6790566">without hints</a></code>
+    </p>
+    <p>
+    <code><a href="/mips_representation/b2m?l=0&student=6790566">Machine Language to Assembly Language (MIPS)</a></code>
+    </p>
+    
+    <h4>Cache:</h4> 
+    <p><i>levels range from 0 to 4</i></p>
+    <p>
+    <code><a href="/cache/d2c?student=6790566">Description to number of bits in parts of address</a></code>
+    </p>
+    <p><i>levels range from 0 to 1</i></p>
+    <p>
+    <code><a href="/cache/hm?student=6790566">Checking whether a sequence of address accesses result in a hit or a miss</a></code>
+    <code><a href="/cache/hm?l=0&student=6790566">4 addresses</a></code>
+    <code><a href="/cache/hm?l=1&student=6790566">8 addresses</a></code>
+    </p>
+    <p><i>levels range from 0 to 31</i></p>
+    <p>
+    <code><a href="/cache/c2a?student=6790566">Code to address sequence</a></code>
+    </p>
+
+    <h4>Shifting and Masking</h4>
+    <p><i>level 0 only</i></p>
+    <p>
+    <code><a href="/shift_and_mask/c2n?l=0&student=200">Code to Number</a></code>
+    </p>
+    <p>
+    <code><a href="/shift_and_mask/r2c?l=0&student=200">Write the code to transform a set of bits X into a given set of bits Y</a></code>
+    </p>
+    <br />
+	
+	<h4>ieee</h4>
+    <p>
+	decimal to ieee
+    <code><a href="/ieee_32/d2ieee?l=0&student=7777777">easy</a></code>
+	<code><a href="/ieee_32/d2ieee?l=1&student=7777777">medium</a></code>
+	<code><a href="/ieee_32/d2ieee?l=2&student=7777777">hard</a></code>
+    </p>
+	 <p>
+	ieee to decimal
+    <code><a href="/ieee_32/ieee2d?l=0&student=7777777">easy</a></code>
+	<code><a href="/ieee_32/ieee2d?l=1&student=7777777">medium</a></code>
+	<code><a href="/ieee_32/ieee2d?l=2&student=7777777">hard</a></code>
+    </p>
+    <br />
+	
+	<h1>Addaptive</h1>
+	<p>
+	<code><a href="/adaptive/math?student=7777777">basic</a></code>
+	</p>
+  </div>
+  </body>
+
+  <!-- Placed at the end of the document so the pages load faster -->
+  <script src="../js/jquery.js"></script>
+  <script src="../js/bootstrap.js"></script>
+
+</html>

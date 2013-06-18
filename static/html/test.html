@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html>
+<head>
+<script type="text/javascript">
+function limitChars() {
+    var x = document.getElementById("fname");
+    var terminals =  document.getElementById("terminals").innerHTML;
+    // var terminals = "xyz(*+)' ",
+    var out = "", i; 
+    for (i = 0 ; i < x.value.length ; i += 1) {
+        var c = x.value[i];
+        if (terminals.indexOf(c) !== -1) {
+            out += c;
+        }
+    }
+    x.value = out;
+}
+</script>
+</head>
+<body>
+
+Enter a boolean expression: <input type="text" id="fname" onchange="limitChars()" onkeyup="limitChars()"/>
+
+<p>You can use the following characters: <span id="terminals">xyz(*+)' </span></p>
+
+</body>
+</html>

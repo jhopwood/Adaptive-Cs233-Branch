@@ -1,0 +1,103 @@
+{% extends "boilerplate.html" %}
+{% block bodyblock %}
+	{% if submit.question_type == "d2ieee" %}
+		 <div class="inline-div">What is the ieee 32 bit representation of</div>
+			<div class="inline-div well">
+			  <h4>{{- question.decimal -}}</h4>
+			  <p>decimal</p>
+			</div>
+
+		  <div class="inline-div well">
+			<p><input type="text" id="sign"/></p>
+			<p><b>sign bit</b></p>
+			<p id="correctsign"></p>
+		  </div>
+		  <div class="inline-div well">
+			<p><input type="text" id="exponent"/></p>
+			<p><b>exponent (8-bit)</b></p>
+			<p id="correctexponent"></p>
+		  </div>
+		  <div class="inline-div well">
+			<p><input type="text" id="mantissa"/></p>
+			<p><b>mantissa (23-bit)</b></p>
+			<p id="correctmantissa"></p>
+		  </div>
+		  <div class="inline-div">
+			<button id="submit" class="btn btn-large disabled">Submit</button>
+			<span id="score"></span>
+		  </div>
+	{% else %}
+		<div class="inline-div">What is the decimal representation of</div>
+			<div class="inline-div well">
+			  <h4>{{- question.sign -}}{{- question.exponent -}}{{- question.mantissa -}}</h4>
+			  <p>IEEE 32 bit</p>
+			</div>
+		<div class="inline-div well">
+			<p><input type="text" id="decimal"/></p>
+			<p><b>decimal</b></p>
+			<p id="correctdecimal"></p>
+		</div>
+		<div class="inline-div">
+			<button id="submit" class="btn btn-large disabled">Submit</button>
+			<span id="score"></span>
+		</div>
+	{% endif %}
+	{% endblock %}
+{% block jsblock %}
+{% if submit.question_type == "d2ieee" %}
+  <script src="/js/numeric.js"></script>
+  <script type="text/javascript">
+  
+    $(document).ready(function() {	      
+      validate_b($('#sign'));
+	  validate_b($('#exponent'));
+	  validate_b($('#mantissa'));
+	  $("#sign").width(10);
+    });
+
+    submit_url = "/ieee_32/{{- submit.question_type -}}?l={{- submit.level -}}&student={{- submit.magic -}}&problem_id={{- submit.problem_id -}}";
+    
+    get_answer = function() {
+	  var sign=$("#sign").attr('value');
+	  var exponent=$("#exponent").attr('value');
+	  var mantissa=$("#mantissa").attr('value');
+	  
+	  var ret= ""+sign+""+exponent+""+mantissa
+	  
+      return ret;
+    }
+    function correct(json_rdata) {
+      $("#correctsign").html("Answer: " + json_rdata["wanted"]["sign"]);
+	  $("#correctexponent").html("Answer: " + json_rdata["wanted"]["exponent"]);
+	  $("#correctmantissa").html("Answer: " + json_rdata["wanted"]["mantissa"]);
+    }
+
+    function canSubmit() {
+       return ($("#sign").attr('value').length == 1) && ($("#exponent").attr('value').length == 8) && ($("#mantissa").attr('value').length == 23);
+    }
+  </script>
+{% else %}
+<script src="/js/numeric.js"></script>
+  <script type="text/javascript">
+  
+    $(document).ready(function() {	      
+      validate_decimal($('#decimal'));
+    });
+
+    submit_url = "/ieee_32/{{- submit.question_type -}}?l={{- submit.level -}}&student={{- submit.magic -}}&problem_id={{- submit.problem_id -}}";
+    
+    get_answer = function() {
+	  var decimal=$("#decimal").attr('value');
+	  var ret=""+decimal;
+      return ret;
+    }
+    function correct(json_rdata) {
+      $("#correctdecimal").html("Answer: " + json_rdata["wanted"]["decimal"]);
+    }
+
+    function canSubmit() {
+       return $("#decimal").attr('value').length > 0;
+    }
+  </script>
+{% endif %}
+{% endblock %}

@@ -1,0 +1,62 @@
+.declevel0 {
+  left: 245px;
+}
+/* Set the left attribute at each level for paragraph and input elements */
+.pdeclevel0 {
+  left: 285px;
+}
+.declevel1 {
+  left: 320px;
+}
+.pdeclevel1 {
+  left: 360px;
+}
+.declevel2 {
+  left: 250px;
+}
+.pdeclevel2 {
+  left: 295px;
+}
+/* Set the top attribute for the input elements and paragraph elements */
+.level0Q1 {
+  top: 130px;
+}
+.level0Q0 {
+  top: 225px;
+}
+.level1Q3 {
+  top: 65px;
+}
+.level1Q2 {
+  top: 190px;
+}
+.level1Q1 {
+  top: 330px;
+}
+.level1Q0 {
+  top: 475px;
+}
+.level2Q7 {
+  top: 90px;
+}
+.level2Q6 {
+  top: 150px;
+}
+.level2Q5 {
+  top: 215px;
+}
+.level2Q4 {
+  top: 285px;
+}
+.level2Q3 {
+  top: 335px;
+}
+.level2Q2 {
+  top: 390px;
+}
+.level2Q1 {
+  top: 435px;
+}
+.level2Q0 {
+  top: 480px;
+}

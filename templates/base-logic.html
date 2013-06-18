@@ -1,0 +1,33 @@
+{% extends "boilerplate.html" %}
+{% block youtubeblock %}
+    <div class="modal hide" id="youtubemodal">
+      <div class="modal-body no-overflow">
+        <iframe id="player" width="560" height="315" src="http://www.youtube.com/embed/{{-youtube-}}?rel=0&wmode=Opaque&enablejsapi=1" frameborder="0"></iframe>
+        <button type="button" class="close" data-dismiss="modal">x</button>
+      </div>
+    </div>
+{% endblock %}
+{% block bodyblock %}
+    <div class="inline-div-block">
+      {% block lblock %}{% endblock %}
+      {% block rblock %}{% endblock %}
+      <div class="inline-div">
+        <p><a class="btn btn-large btn-primary submit-space" data-toggle="modal" href="#youtubemodal" >Help Video</a></p>
+        <p><a id="submit" class="btn btn-large submit-space">Submit</a></p>
+        <p><span id="score"></span></p>
+      </div>
+    </div>
+{% endblock %}
+{% block jsblock %}
+    <script type="text/javascript" src="http://www.youtube.com/player_api"></script>
+    <script type="text/javascript">
+      var player;
+      function onYouTubePlayerAPIReady() {player = new YT.Player('player'); }
+      $('#youtubemodal').on('hidden', function () {
+        player.stopVideo();
+      })
+
+      $(document).ready(checkSubmit(false));
+      submit_url = "submit?q={{- qtype -}}&l={{- level -}}&student={{- magic -}}&problem_id={{- problem_id -}}";
+    </script>
+{% endblock %}

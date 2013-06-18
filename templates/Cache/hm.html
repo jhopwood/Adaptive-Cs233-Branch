@@ -1,0 +1,74 @@
+{% extends "boilerplate.html" %}
+{% block bodyblock %}
+<div class="inline-div-block">
+  <div class="inline-div">
+    <p>If an address has 32 bits and the cache has  <b>{{question.description.index.amount}}</b>  sets with<p>
+    <p>blocks of <b>{{question.description.offset.amount}}</b> bytes, which of these accesses result in a cache hit?</p>
+    
+    <p>(Assume they happen in the order presented)</p>
+    <p>(Hint: The first access is always a miss)</p>
+  </div>
+  <div class="inline-div">
+    <table class="table table-striped table-bordered table-condensed" id="hm">
+      <tbody>
+        <tr>
+          <th>Address</th>
+          <th>Binary</th>
+          <th>Hit/Miss</th>
+        </tr>
+        {% for address in question.addresses %}
+        <tr>
+          <td>0x{{ address }}</td>
+          <td>{{ convert_hex_to_bin(address,8) }}</td>
+          <td id="address{{ loop.index0 }}" class="nogap">
+            <div class="btn-group index-{{ loop.index0 }}" data-toggle="buttons-radio">
+              <button id="btn{{ loop.index0 }}hit" class="btn hit" data-index="{{ loop.index0 }}" onclick="timerCheck()">Hit</button>
+              {% if loop.index0 == 0 %}
+                <button id="btn{{ loop.index0 }}miss" class="btn miss active"data-index="{{ loop.index0 }}" onclick="timerCheck()">Miss</button>
+              {% else %}
+                <button id="btn{{ loop.index0 }}miss" class="btn miss"data-index="{{ loop.index0 }}" onclick="timerCheck()">Miss</button>
+              {% endif %}
+            </div>      
+          </td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+  <div class="inline-div">
+    <button id="submit" class="btn btn-large disabled">Submit</button>
+    <span id="score"></span>
+  </div>
+</div>
+{% endblock %}
+{% block jsblock %}
+<script>
+
+var number_of_addresses = {{question.addresses|length}};
+
+function canSubmit() {
+  var active = $(".btn.active").length;
+  return (active === number_of_addresses);
+}
+
+function get_answer() {
+    var hits = [];
+    $.each($(".btn.active.hit"), function(index, value) { hits.push($(value).data("index")); });
+    return hits.join(",");
+}
+
+function correct(json_rdata) {
+  var hits = json_rdata["wanted"];
+  for (var i = 0 ; i < number_of_addresses ; i ++) {
+    if(hits.indexOf(i) >= 0) {
+      $("#btn"+i+"hit").addClass('btn-correct');
+      $("#btn"+i+"miss").addClass('btn-incorrect');
+    }
+    else {
+      $("#btn"+i+"miss").addClass('btn-correct');
+      $("#btn"+i+"hit").addClass('btn-incorrect');
+    }
+  }
+}
+</script>
+{% endblock %}
