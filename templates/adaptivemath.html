@@ -1,7 +1,7 @@
 {% extends "adaptivebase.html" %}
 {% block questionblock %}
 {% if type == "get" %}
-<p>You must choose a dificulty level before the question will display. Your proficiency is {{ proficiency }}</p>
+<p>You must choose a dificulty level before the question will display . Easy, Medium, and Hard take your proficiency into account</p>
 {% else %}
 	<br>
 	<div class="inline-div">What is the answer to </div>
@@ -10,7 +10,7 @@
 	  <h4>{{- question.number1 -}}</h4>
 	  <p>decimal</p>
 	</div>
-	<div class="inline-div">+</div>
+	<div class="inline-div">{{- question.sign -}}</div>
 	<div class="inline-div well">
 	  <h4>{{- question.number2 -}}</h4>
 	  <p>decimal</p>
@@ -45,13 +45,13 @@
 			$.post(submission_url(), {answer: answer, button: {{- question.button -}} }, 
 			function(rdata) {
 			  json_rdata = JSON.parse(rdata)
-			  $("#submit").html("Try Another?");
 			  $("#submit").unbind('click');
-			  $("#submit").click(function() {
-				window.location.reload();
-			  });
+			  $("#submit").html('done')
+			  $("#difficultyblock").show();
+			  $("#submit").removeClass('btn-primary').addClass('disabled').prop("disabled", true);
 
 			  $("#score").html("Score: " + ((json_rdata["score"] === 100.0) ? '<span style="color:lime">100%</span>' : '<span style="color:red">' + json_rdata["score"] + '%</span>'));
+			  $("#prof").html("Your proficiency is "+ json_rdata["proficiency"])
 			  correct(json_rdata);
 			});
 		});

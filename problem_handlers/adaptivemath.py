@@ -28,12 +28,10 @@ incorrect=1
 
 class AdaptiveMath(base_handler.BaseHandler):
 	__my_random__ = None
-	valid_types = ["math"]
+	valid_types = ["math","add","subtract"]
 	
 	#TODO
-	#put the formula into the proficiency alter method
 	#make a baseclass handler for adaptive problems
-	#reorginize html files into base and extended
 	#expand for multiple question types
 	#Refactor
 	
@@ -77,32 +75,38 @@ class AdaptiveMath(base_handler.BaseHandler):
 		else:
 			self.get_basics(self.maximum_level(question_type))
 			student_answer = self.request.get('answer')
-			self.initialize_random_number_generator(question_type)
 			question_data = self.data_for_question(question_type)
 			(score,wanted) = self.score_student_answer(question_type,question_data,student_answer)
-			self.alter_proficiency(question_type, score)
+			prof=self.alter_proficiency(question_type, score)
 			# store the result in the database
 			self.put_submission(question_type, 0, score, self.request.get('answer'))
-			blob = json.dumps(self.get_return_data(score, wanted))
+			blob = json.dumps(self.get_return_data(score, wanted, prof))
 			self.response.out.write(blob)
 	
 	#gets the students proficiency for a problem type should have latest entry as 0th index
 	def get_student_proficiency(self, magic, prob_type):
 		return Proficiency.all().filter('student_magic_number =', str(magic)).filter('question_type = ', str(prob_type)).order('-time')
 	
+	def get_return_data(self, score, wanted, prof):
+		return {"score": score, "wanted": wanted, "proficiency":prof}
+	
 	#can be implemented differently for partial credit problems
 	def alter_proficiency(self, question_type, score):
 		if score == 100:
 			entry = self.get_student_proficiency(self.magic, question_type)
 			prof=entry[0].proficiency
-			prof=prof+correct
+			difficulty=int(self.request.get('button'))
+			prof=prof+((difficulty+1)*correct)
 			self.put_proficiency(question_type, prof)
+			return prof
 		else:
 			entry = self.get_student_proficiency(self.magic, question_type)
 			prof=entry[0].proficiency
-			prof=prof-incorrect
+			difficulty=int(self.request.get('button'))
+			prof=prof-((3-difficulty)*correct)
 			prof=max(prof,0.0)
 			self.put_proficiency(question_type, prof)
+			return prof
 	
 	#adds a students new proficiency to the database
 	def put_proficiency(self, type, prof):
@@ -135,16 +139,28 @@ class AdaptiveMath(base_handler.BaseHandler):
 			self.__my_random__ = random.Random()
 		self.__my_random__.seed(self.generate_index(self.magic, 0, self.problem_id, question_type))
 		
-		#get the adjusted level based on the button pressed and their proficiency rating
-		prof=self.get_adjusted_level(question_type)
-		
-		#generates num1 and num2 to be added
-		num1=exponent = self.__my_random__.randint(1,10)*max(prof,1)
-		num2=exponent = self.__my_random__.randint(1,10)*max(prof,1)
-		
-		ans = num1 + num2
+		if question_type == "subtract":
+			#get the adjusted level based on the button pressed and their proficiency rating
+			prof=self.get_adjusted_level(question_type)
 			
-		return {"number1": num1, "number2":num2, "answer":ans, "button":self.request.get('button')}
+			#generates num1 and num2 to be added
+			num1=exponent = self.__my_random__.randint(1,10)*max(prof,1)
+			num2=exponent = self.__my_random__.randint(1,10)*max(prof,1)
+			
+			ans = num1 - num2
+				
+			return {"number1": num1, "number2":num2, "answer":ans, "button":self.request.get('button'), "sign":"-"}
+		else:
+			#get the adjusted level based on the button pressed and their proficiency rating
+			prof=self.get_adjusted_level(question_type)
+			
+			#generates num1 and num2 to be added
+			num1=exponent = self.__my_random__.randint(1,10)*max(prof,1)
+			num2=exponent = self.__my_random__.randint(1,10)*max(prof,1)
+			
+			ans = num1 + num2
+				
+			return {"number1": num1, "number2":num2, "answer":ans, "button":self.request.get('button'), "sign":"+"}
 	
 	#gets student proficiency and then adjusts level based on which button was pressed
 	def get_adjusted_level(self, question_type):
