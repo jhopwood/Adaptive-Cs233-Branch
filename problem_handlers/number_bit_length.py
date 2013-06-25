@@ -34,44 +34,6 @@ class NumberBitLength(base_handler.BaseHandler):
   def is_valid_type(self, question_type):
     return question_type in self.valid_types
 
-  def get(self, question_type):
-    self.get_basics(2)
-    if question_type == "random":
-        question_type = random.choice(self.valid_types)
-        if self.request.get('l', None) == None:
-            self.level = random.choice(range(3))
-
-    if self.is_valid_type(question_type):
-      if self.request.get('type') == 'json':
-        return self.get_grades(question_type)
-      question_data = self.data_for_question(question_type)
-      submit_data = {"question_type":question_type, "magic":self.magic,
-                     "level":self.level, "problem_id":self.problem_id}
-      data = {"submit": submit_data, "question":question_data}
-      self.add_best_score(data, question_type)
-      self.render("bit_length.html", **data)
-    else:
-      self.response.out.write("Invalid URL")
-      
-  def post(self, question_type):
-    if not self.is_valid_type(question_type):
-      return self.response.out.write("Invalid URL")
-    self.get_basics(2)
-    student_answer = int(self.request.get('answer'))
-    question_data = self.data_for_question(question_type)
-    if question_data['type'] == 'l':
-      wanted = question_data['length']
-    elif question_data['type'] == 'x':
-      wanted = question_data['upper_bound']
-    elif question_data['type'] == 'n':
-      wanted = question_data['lower_bound']
-    # logging.warn("Wanted: %i" % wanted)
-    score = 100.0 if wanted == student_answer else 0.0
-    # store the result in the database
-    self.put_submission(question_type, int(self.level), score, self.request.get('answer'))
-
-    blob = json.dumps({"score":score, "wanted":wanted})
-    self.response.out.write(blob)
     
   # The 'data' for a question should basically be:
   # type -  The question type. Should be either l, x, or n
@@ -155,3 +117,18 @@ class NumberBitLength(base_handler.BaseHandler):
     if request_type == "x":
       return "maximum"
     return "length"
+
+  def score_student_answer(self, question_type, question_data, student_answer):
+    if question_type[1] == 'l':
+      wanted = question_data['length']
+    elif question_type[1] == 'x':
+      wanted = question_data['upper_bound']
+    elif question_type[1] == 'n':
+      wanted = question_data['lower_bound']
+    wanted = int(wanted)
+    student_answer = int(student_answer)
+    score = 100.0 if wanted == student_answer else 0.0
+    return (score, wanted)
+
+  def template_for_question(self, question_type):
+    return self.__class__.__name__ + "/bit_length.html"

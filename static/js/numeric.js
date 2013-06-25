@@ -14,7 +14,6 @@ function validate_decimal(elements) {
     validate_elements(elements, '.-0123456789');
 }
 
-
 function validate_elements(elements, allowed_characters) {
     elements.keypress(function(event) {
         return filter_input_character(event, allowed_characters);

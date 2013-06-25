@@ -321,7 +321,7 @@ class ArrayLoop(object):
 #                10 for 2D array of normal type
 #                11 for 1D array of structs
 def data_for_question(generator, level):
-    num_bits = level >> 1 & 3
+    num_bits = (level >> 1) & 3
     num_arrays = num_bits + int(num_bits == 0)
     use_compound_operators = num_bits == 1
     use_complex_loops = bool(level & 1)

@@ -1,0 +1,64 @@
+{% extends "boilerplate.html" %}
+{% block bodyblock %}
+<div class="inline-div" style="text-align: left">
+    <canvas id="timing-diagram">Please get an HTML 5 compliant browser</canvas>
+    <div>At time <tt>t0</tt> in the diagram above, what value is the output <tt>readdata<span id="readdata_num"></span></tt>?</div>
+    <div class="inline-div well">
+        <input class="nogap numeric" type="text" id="answer">
+        <p id="correct">&nbsp;</p>
+    </div>
+    <div class="inline-div">
+        <button id="submit" class="btn btn-large disabled">Submit</button>
+        <span id="score"></span>
+    </div>
+</div>
+{% endblock %}
+{% block jsblock %}
+<script src="/js/numeric.js"></script>
+<script src="/js/timingdiagram.js"></script>
+<script>
+    var canvas = $('#timing-diagram').get(0);
+
+    /*
+    var signals = [
+        {name: 'clk', binary: true, values: []},
+        {name: 'writeenable', binary: true, values: [{time: 0, value: 1}, {time: 46, value: 0}]},
+        {name: 'rsNum', binary: false, values: [{time: 0, value: 10}, {time: 18, value: 3}, {time: 41, value: 17}]}
+    ];
+    var clk = 0;
+    for (var i = 0; i < 80; i += 5) {
+        signals[0].values.push({time: i, value: clk});
+        clk ^= 1;
+    }
+
+    var markers = [17, 29, 42];
+    */
+
+    var questionData = JSON.parse('{{ question | safe }}'); // there's probably a better way of doing this
+    $('#readdata_num').html(questionData.readdata_num + 1); // FIXME: hacky
+    var timingDiagram = new TimingDiagram(canvas, questionData.signals, questionData.labeled_markers, questionData.unlabeled_markers);
+    timingDiagram.draw();
+
+    var submit_url = '/register_file/{{- submit.question_type -}}?l={{- submit.level -}}&student={{- submit.magic -}}&problem_id={{- submit.problem_id -}}';
+
+    function get_answer() {
+        return $('#answer').attr('value');
+    }
+
+    function correct(json_rdata) {
+        $('#correct').html('Answer: ' + json_rdata['wanted']);
+        if (json_rdata['wanted'] != get_answer()) {
+            $('#correct').css('color', 'red');
+        }
+    }
+
+    function canSubmit() {
+        return $("#answer").attr('value').length > 0;
+    }
+
+    $(document).ready(function() {	      
+        validate_d($('#answer'));
+        checkSubmit();
+    });
+</script>
+{% endblock %}

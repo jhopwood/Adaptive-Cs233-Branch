@@ -1,0 +1,52 @@
+{% extends "boilerplate.html" %}
+{% block bodyblock %}
+  {% if question.type == "l" %}
+    <div class="inline-div">How many bits are needed to represent</div>
+    <div class="inline-div well">
+      <h4>{{- question.number -}}</h4>
+      <p>decimal</p>
+    </div>
+    <div class="inline-div">in <b>{{- question.type_string -}}</b>?</div>
+  {% else %}
+    <div class="inline-div">What is the</div>
+    <div class="inline-div well">
+      <h4>{{- question.request_type_string -}}</h4>
+      <p><!-- Just to even out spacing at the bottom of the well--></p>
+    </div>
+    <div class="inline-div">number that can be represented by</div>
+    <div class="inline-div well">
+      <h4>{{- question.length -}}</h4>
+      <p>bits?</p>
+    </div>
+  {% endif %}
+  <div class="inline-div well">
+    <p><input type="text" id="answer"/></p>
+    <p><b>{{- question.binary_type_string -}}</b></p>
+    <p id="correct"></p>
+  </div>
+  <div class="inline-div">
+    <button id="submit" class="btn btn-large disabled">Submit</button>
+    <span id="score"></span>
+  </div>
+{% endblock %}
+{% block jsblock %}
+  <script src="/js/numeric.js"></script>
+  <script type="text/javascript">
+    $(document).ready(function() {	      
+      validate_d($('#answer'));
+    });
+
+    submit_url = "/number_bit_length/{{- submit.question_type -}}?l={{- submit.level -}}&student={{- submit.magic -}}&problem_id={{- submit.problem_id -}}";
+    
+    get_answer = function() {
+      return $("#answer").attr('value');
+    }
+    function correct(json_rdata) {
+      $("#correct").html("Answer: " + json_rdata["wanted"]);
+    }
+
+    function canSubmit() {
+       return $("#answer").attr('value').length > 0;
+    }
+  </script>
+{% endblock %}

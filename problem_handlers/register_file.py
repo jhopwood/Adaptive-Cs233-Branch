@@ -33,52 +33,6 @@ class RegisterFile(BaseHandler):
     period = 10; # can't figure out how to reference half_period here :(
     max_time = 80 # should be kept synced with timing_diagram.js
 
-
-    def get(self, question_type):
-        self.get_basics(2)
-        # If the user wants a random question, replace question_type with
-        # a random valid question type
-        if question_type == 'random':
-            question_type = random.choice(self.valid_types)
-            if self.request.get('l', None) == None:
-                self.level = random.randrange(3)
-
-        # If the question type is valid, check to see if it is a grade request
-        # (aka type=json), otherwise generate a new problem     
-        if self.is_valid_type(question_type):
-            if self.request.get('type') == 'json':
-                return self.get_grades(question_type)
-            question_data = json.dumps(self.data_for_question(question_type))
-            submit_data = {'question_type': question_type, 'magic': self.magic,
-                    'level': self.level, 'problem_id': self.problem_id}
-            data = {'submit': submit_data, 'question': question_data}
-            self.add_best_score(data, question_type)
-            self.render('register_file.html', **data)
-        else:
-            self.response.out.write('Invalid URL')
-
-
-    def post(self, question_type):
-        if not self.is_valid_type(question_type):
-            return self.response.out.write('Invalid URL')
-        self.get_basics(2)
-        student_answer = self.request.get('answer')
-        question_data = self.data_for_question(question_type)
-
-        register_values = self.get_register_values(question_data['signals'])
-        time = question_data['labeled_markers'][0]
-        readnum_signal = 5 + question_data['readdata_num'] # FIXME: hardcoding 5 is ugly
-        register_number = self.get_value_at_time(question_data['signals'][readnum_signal]['values'], time)
-        correct_answer = self.get_register_value(register_values, register_number, time)
-
-        score = 100.0 if str(correct_answer) == student_answer.strip() else 0.0
-        # store the result in the database
-        self.put_submission(question_type, int(self.level), score, student_answer)
-
-        blob = json.dumps({'score': score, 'wanted': correct_answer})
-        self.response.out.write(blob)
-
-
     def data_for_question(self, question_type):
         # only handling d2o for now
         if self.__my_random__ == None:
@@ -100,12 +54,12 @@ class RegisterFile(BaseHandler):
         labeled_markers = self.generate_markers()
         unlabeled_markers = [t for t in unlabeled_markers if t not in labeled_markers]
         readdata_num = self.__my_random__.randrange(2);
-        return {
+        return json.dumps({
                 'signals': signals,
                 'labeled_markers': labeled_markers,
                 'unlabeled_markers': unlabeled_markers,
                 'readdata_num': readdata_num
-               }
+               })
 
 
     def generate_clock(self):
@@ -243,3 +197,18 @@ class RegisterFile(BaseHandler):
     # should also be hoisted up
     def is_valid_type(self, question_type):
       return question_type in self.valid_types
+
+    def score_student_answer(self, question_type, question_data, student_answer):
+        logging.info(question_data)
+        question_data = json.loads(question_data)
+        register_values = self.get_register_values(question_data['signals'])
+        time = question_data['labeled_markers'][0]
+        readnum_signal = 5 + question_data['readdata_num'] # FIXME: hardcoding 5 is ugly
+        register_number = self.get_value_at_time(question_data['signals'][readnum_signal]['values'], time)
+        correct_answer = self.get_register_value(register_values, register_number, time)
+
+        score = 100.0 if str(correct_answer) == student_answer.strip() else 0.0
+        return(score, correct_answer)
+
+    def template_for_question(self, question_type):
+        return self.__class__.__name__ + "/register_file.html"

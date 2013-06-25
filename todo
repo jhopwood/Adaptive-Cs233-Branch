@@ -1,3 +1,5 @@
+- fix random question type in base_handler.py for scoring
+
 - when it randomizes type of question (e.g., arithmetic c+) student grade is stored based on resulting random type, not the asked for question type.  This is relatively straightforward to fix, make sure the randomization is deterministic and then return the problem type is c+. 
 
 

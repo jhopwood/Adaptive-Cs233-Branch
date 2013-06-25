@@ -87,53 +87,6 @@ class MIPSRepresentation(base_handler.BaseHandler):
 
     def is_valid_type(self, question_type):
       return question_type in self.valid_types
-    
-    def get(self, question_type):
-        self.get_basics(2)
-        # If the user wants a random question, replace question_type with
-        # a random valid question type
-        if question_type == "random":
-            question_type = random.choice(self.valid_types)
-            if self.request.get('l', None) == None:
-                self.level = random.choice(range(2))
-        # If the question type is valid, check to see if it is a grade request
-        # (aka type=json), otherwise generate a new problem     
-        if self.is_valid_type(question_type):
-            if self.request.get('type') == 'json':
-                return self.get_grades(question_type)
-            question_data = self.data_for_question(question_type)
-            logging.warn(question_data)
-            submit_data = { "question_type":question_type, "magic":self.magic,
-                            "level":self.level, "problem_id":self.problem_id}
-            data = {"submit": submit_data, "question":question_data}
-            self.add_best_score(data, question_type)
-            self.render("mips_representation.html", **data)
-        else:
-            self.response.out.write("Invalid URL")
-        
-    def post(self, question_type):
-        if not self.is_valid_type(question_type):
-            return self.response.out.write("Invalid URL")
-        self.get_basics(2)
-        student_answer = self.request.get('answer')
-        question_data = self.data_for_question(question_type)
-        wanted_binary = question_data["binary"]
-        student_answer_binary = student_answer
-        # If the student is converting to MIPS, we convert their MIPS to binary
-        # and compare against that instead
-        if question_type == "b2m":
-            wanted = question_data["mips"]
-            student_answer_binary = self.binary_from_mips(student_answer)
-        else:
-            # We just want the binary answer
-            wanted = wanted_binary
-            student_answer_binary = student_answer_binary.replace(" ","")
-        score = 100.0 if wanted_binary.strip() == student_answer_binary.strip() else 0.0
-        # store the result in the database
-        self.put_submission(question_type, int(self.level), score, self.request.get('answer'))
-
-        blob = json.dumps({"score":score, "wanted":wanted})
-        self.response.out.write(blob)
         
     # The 'data' for a question should basically be:
     # mips - The MIPS instruction string
@@ -187,3 +140,24 @@ class MIPSRepresentation(base_handler.BaseHandler):
             # to add in any zeroes that bin might have left out
             binary += bin(byte)[2:].zfill(8)
         return binary
+
+    def score_student_answer(self, question_type, question_data,student_answer):
+        wanted_binary = question_data["binary"]
+        student_answer_binary = student_answer
+        # If the student is converting to MIPS, we convert their MIPS to binary
+        # and compare against that instead
+        if question_type == "b2m":
+            wanted = question_data["mips"]
+            student_answer_binary = self.binary_from_mips(student_answer)
+        else:
+            # We just want the binary answer
+            wanted = wanted_binary
+            student_answer_binary = student_answer_binary.replace(" ","")
+        score = 100.0 if wanted_binary.strip() == student_answer_binary.strip() else 0.0
+        return(score, wanted)
+
+    def template_for_question(self, question_type):
+        return self.__class__.__name__ + "/mips_representation.html"
+
+    def maximum_level(self, question_type):
+        return 1

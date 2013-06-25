@@ -77,7 +77,7 @@ class Cache(base_handler.BaseHandler):
     numblocks = numsets * associativity
     cachesize = numblocks * blocksize
 
-    desc_number = (self.level-1) if self.level != 0 else self.generator.randint(1,4)
+    desc_number = (self.level-1) if self.level != 0 else self.generator.randint(0,4)
 
     assoc_str = 'direct-mapped ' if (associativity == 1) else 'fully-associative ' if (index == 0) else ('' + str(associativity) + '-way set-associative ') 
     size_str = ('' + str(cachesize/1024) + 'KB ') if (cachesize >= 1024) else ('' + str(cachesize) + 'B ')

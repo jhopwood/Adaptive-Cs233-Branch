@@ -161,7 +161,7 @@ class BaseHandler(webapp2.RequestHandler):
             return self.get_grades(question_type)
         self.initialize_random_number_generator(question_type)
         question_data = self.data_for_question(question_type)
-        #logging.warn(question_data)
+        # logging.warn(question_data)
         submit_data = { "question_type":question_type, "magic":self.magic,
                         "level":self.level, "problem_id":self.problem_id}
         data = {"submit": submit_data, "question":question_data}
@@ -188,7 +188,7 @@ class BaseHandler(webapp2.RequestHandler):
       self.initialize_random_number_generator(question_type)
       question_data = self.data_for_question(question_type)
       (score,wanted) = self.score_student_answer(question_type,question_data,student_answer)
-      logging.warn({"student":student_answer,"wanted":wanted})
+      # logging.warn({"student":student_answer,"wanted":wanted})
       # store the result in the database
       self.put_submission(question_type, int(self.level), score, self.request.get('answer'))
       blob = json.dumps(self.get_return_data(score, wanted))

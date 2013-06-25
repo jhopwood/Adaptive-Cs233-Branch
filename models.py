@@ -15,9 +15,12 @@ class WebHomework(db.Model):
     duedate = db.DateTimeProperty(required=True)
     questions = db.TextProperty(required=True)
 
+	
 class Proficiency(db.Model):
 	student_magic_number = db.StringProperty(required=True)
 	question_type = db.StringProperty(required=True)
 	proficiency = db.FloatProperty(required=True)
 	time = db.DateTimeProperty(auto_now_add=True)
 	
+
+

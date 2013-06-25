@@ -1,0 +1,53 @@
+{% extends "boilerplate.html" %}
+{% block bodyblock %}
+  <div class="inline-div-block">
+{{question.description}}</br>
+  <div class="inline-div well">
+    <div class="inline-div-block">
+    <p><input class="nogap numeric" type="text" maxlength="5" size="5" id="num_reg" title="# of registers"/>
+    <input class="nogap numeric" type="text" maxlength="5" size="5" id="reg_width"/>-bit registers, 
+    </div><br>
+    <div class="inline-div-block">
+    <input class="nogap numeric" type="text" maxlength="5" size="5" id="num_write_ports"/> write ports and 
+    <input class="nogap numeric" type="text" maxlength="5" size="5" id="num_read_ports"/> read ports</p>
+    </div><br>
+    <p id="correct"></p>
+  </div>
+  <div class="inline-div">
+    <button id="submit" class="btn btn-large disabled">Submit</button>
+    <span id="score"></span>
+  </div>
+  </div>
+{% endblock %}
+{% block jsblock %}
+  <script src="/js/numeric.js"></script>
+  <script type="text/javascript">
+    $(document).ready(function() {        
+      validate_d($('#num_reg'));
+      validate_d($('#reg_width'));
+      validate_d($('#num_write_ports'));
+      validate_d($('#num_read_ports'));
+      $("#num_reg").width(30);  
+      $("#reg_width").width(30);  
+      $("#num_write_ports").width(30);
+      $("#num_read_ports").width(30);   
+    });
+    
+    get_answer = function() {
+      return $("#num_reg").attr('value') + ','
+           + $("#reg_width").attr('value') + ','
+           + $("#num_write_ports").attr('value') + ','
+           + $("#num_read_ports").attr('value');
+    }
+    function correct(json_rdata) {
+      $("#correct").html("Answer: " + json_rdata["wanted"]);
+    }
+
+    function canSubmit() {
+       return ($("#num_reg").attr('value').length > 0) &&
+              ($("#reg_width").attr('value').length > 0) &&
+              ($("#num_write_ports").attr('value').length > 0) && 
+              ($("#num_read_ports").attr('value').length > 0);
+    }
+  </script>
+{% endblock %}

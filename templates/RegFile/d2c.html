@@ -1,0 +1,68 @@
+{% extends "boilerplate.html" %}
+{% block bodyblock %}
+  <div class="inline-div-block">
+{{question.description}}</br>
+  <div class="inline-div well">
+    <div class="inline-div-block">
+    <p><input class="nogap numeric" type="text" maxlength="5" id="num_dec" title="# of decoders"/>
+    <input class="nogap numeric" type="text" maxlength="5" id="d1"/>-to-
+    <input class="nogap numeric" type="text" maxlength="5" id="d2"/> decoders and</p>
+    </div><br>
+    <div class="inline-div-block">
+    <input class="nogap numeric" type="text" maxlength="5" id="num_mux" title="# of multiplexors"/> 
+    <input class="nogap numeric" type="text" maxlength="5" id="mux_width"/>-bit wide 
+    <input class="nogap numeric" type="text" maxlength="5" id="m1"/>-to-
+    <input class="nogap numeric" type="text" maxlength="5" id="m2"/> multiplexors</p>
+    </div><br>
+    <p id="correct"></p>
+  </div>
+  <div class="inline-div">
+    <button id="submit" class="btn btn-large disabled">Submit</button>
+    <span id="score"></span>
+  </div>
+  </div>
+{% endblock %}
+{% block jsblock %}
+  <script src="/js/numeric.js"></script>
+  <script type="text/javascript">
+    $(document).ready(function() {        
+      validate_d($('#num_dec'));
+      validate_d($('#d1'));
+      validate_d($('#d2'));
+      validate_d($('#num_mux'));
+      validate_d($('#mux_width'));
+      validate_d($('#m1'));
+      validate_d($('#m2'));
+      $("#num_dec").width(30);  
+      $("#d1").width(30);  
+      $("#d2").width(30);
+      $("#num_mux").width(30);  
+      $("#mux_width").width(30);  
+      $("#m1").width(30);  
+      $("#m2").width(30);  
+    });
+    
+    get_answer = function() {
+      return $("#num_dec").attr('value') + ','
+           + $("#d1").attr('value') + ','
+           + $("#d2").attr('value') + ','
+           + $("#num_mux").attr('value') + ','
+           + $("#mux_width").attr('value') + ','
+           + $("#m1").attr('value') + ','
+           + $("#m2").attr('value');
+    }
+    function correct(json_rdata) {
+      $("#correct").html("Answer: " + json_rdata["wanted"]);
+    }
+
+    function canSubmit() {
+       return ($("#num_dec").attr('value').length > 0) &&
+              ($("#d1").attr('value').length > 0) &&
+              ($("#d2").attr('value').length > 0) && 
+              ($("#num_mux").attr('value').length > 0) && 
+              ($("#mux_width").attr('value').length > 0) && 
+              ($("#m1").attr('value').length > 0) && 
+              ($("#m2").attr('value').length > 0);
+    }
+  </script>
+{% endblock %}

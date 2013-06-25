@@ -1,5 +1,6 @@
 __all__ = [
     "base_handler",
+	"adaptive_base_handler",
     "digital_logic",
     "number_based_problem",
     "numbers_conversion",
@@ -12,6 +13,8 @@ __all__ = [
     "cache",
     "finite_state_problem",
     "bit_shift_and_mask_problem",
-	"ieee_32",
+    "rf",
+    "ieee_32",
+    "parity",
 	"adaptivemath"
 ]

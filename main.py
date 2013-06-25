@@ -180,7 +180,9 @@ app = webapp2.WSGIApplication([('/', MainHandler),
                                ('/msi_component/(.*)', msi_component_problem.MSIComponentProblem),
                                ('/finite_state/(.*)', finite_state_problem.FiniteStateProblem),
                                ('/shift_and_mask/(.*)', bit_shift_and_mask_problem.BitShiftAndMaskProblem),
-							   ('/ieee_32/(.*)', ieee_32.IeeeProblem),
+                               ('/rf/(.*)', rf.RegFile),
+                               ('/ieee_32/(.*)', ieee_32.IeeeProblem),
+                               ('/parity/(.*)', parity.Parity),
 							   ('/adaptive/(.*)', adaptivemath.AdaptiveMath)
                                ],
                               debug=True)
