@@ -1,4 +1,4 @@
-{% extends "adaptivebase.html" %}
+{% extends "adaptiveboilerplate.html" %}
 {% block questionblock %}
 {% if type == "get" %}
 <p>You must choose a dificulty level before the question will display . Easy, Medium, and Hard take your proficiency into account</p>
@@ -36,27 +36,7 @@
     $(document).ready(function() {	      
 		validate_decimal($('#studentanswer'));
 		$("#difficultyblock").width($("#questionblock").width());
-
-		//this allows me to send additional information with a press of the submission button
-		$("#submit").unbind('click');
-		$("#submit").click(function () {
-			if ($("#submit").hasClass("disabled")) { return; }
-			var answer = get_answer();
-			$.post(submission_url(), {answer: answer, button: {{- question.button -}} }, 
-			function(rdata) {
-			  json_rdata = JSON.parse(rdata)
-			  $("#submit").unbind('click');
-			  $("#submit").html('done')
-			  $("#difficultyblock").show();
-			  $("#submit").removeClass('btn-primary').addClass('disabled').prop("disabled", true);
-
-			  $("#score").html("Score: " + ((json_rdata["score"] === 100.0) ? '<span style="color:lime">100%</span>' : '<span style="color:red">' + json_rdata["score"] + '%</span>'));
-			  $("#prof").html("Your proficiency is "+ json_rdata["proficiency"])
-			  correct(json_rdata);
-			});
-		});
-    });
-	
+    });	
     
     get_answer = function() {
       return $("#studentanswer").attr('value');
