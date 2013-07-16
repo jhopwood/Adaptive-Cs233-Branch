@@ -26,6 +26,7 @@ import json
 import time
 import zlib
 import random
+import math
 
 from models import Submission
 from models import Proficiency
@@ -55,6 +56,7 @@ class AdaptiveBaseHandler(webapp2.RequestHandler):
 	# This should be overriden for any subclass using the default get and post
 	# methods
 	valid_types = []
+	default_rw=""
 	# The random number generator 'generator' should be used whenever the
 	# generated value is going to be used in a question.
 	generator = random.Random()
@@ -64,14 +66,10 @@ class AdaptiveBaseHandler(webapp2.RequestHandler):
 	# this is very similar to the base problem handler new or altered methods are put here
 	#
 	#functions that must be implemented for get and post to be used
-	#	needs "button":self.request.get('button') added to return and get_adjusted_level to be called when determining level-->  def data_for_question(self, question_type):
+	#	needs "button":self.request.get('button'), "typ":typ, "lev":lev} added to return and get_adjusted_level to be called when determining level lev and typ are the levels and type of the question your selector chooses-->  def data_for_question(self, question_type):
 	#	Shouldn't need altered--> maximum_level(self, question_type):
 	#	Shouldn't need altered--> score_student_answer(self,question_type,question_data,student_answer):
 	#	Shouldn't need altered--> template_for_question(self, question_type):  as long as the template html is changed to extend adaptivebase.html
-	#
-	#	get_return_data():     could need overwritten if the class overwrites it
-	#	alter_proficiency():   could need overwritten if you count partial credit
-	#	get_container(self):   can be overwritten if you want the container name different from the class name
 	
 	def get_container(self):
 		#returns a string to be used to keep track of the proficiency in the database when you have multiple question types
@@ -92,7 +90,7 @@ class AdaptiveBaseHandler(webapp2.RequestHandler):
 			entry = self.get_student_proficiency(self.magic, self.get_container())
 			if entry.count() == 0:
 				prof = 1.00
-				self.put_proficiency(self.get_container(), 1.0)
+				self.put_proficiency(self.get_container(), 1.0, {"typ":"none", "lev":0})
 			else:
 				prof = entry[0].proficiency
 			
@@ -124,11 +122,20 @@ class AdaptiveBaseHandler(webapp2.RequestHandler):
 			student_answer = self.request.get('answer')
 			question_data = self.data_for_question(question_type)
 			(score,wanted) = self.score_student_answer(question_type,question_data,student_answer)
-			prof=self.alter_proficiency(question_type, score, self.get_container())
+			prof=self.alter_proficiency(question_type, score, self.get_container(), question_data)
 			# store the result in the database
 			self.put_submission(question_type, 0, score, self.request.get('answer'))
 			blob = json.dumps(self.get_return_data(score, wanted, prof))
 			self.response.out.write(blob)
+	
+	#takes potentially big numbers and squishes between 4 and 0 for probability during selection
+	def curve_fit(self, number):
+		if number < 0:
+			return 4- (3 * math.exp(number))
+		elif number == 0:
+			return 1
+		elif number > 0:
+			return math.exp(-number)
 	
 	#gets student proficiency and then adjusts level based on which button was pressed
 	def get_adjusted_level(self, question_type, cont):
@@ -143,14 +150,14 @@ class AdaptiveBaseHandler(webapp2.RequestHandler):
 		return prof
 
 	#can be implemented differently for partial credit problems
-	def alter_proficiency(self, question_type, score, cont):
+	def alter_proficiency(self, question_type, score, cont, question_data):
 		if score == 100:
 			entry = self.get_student_proficiency(self.magic, cont)
 			prof = entry[0].proficiency
 			difficulty = int(self.request.get('button'))
 			prof = prof + ((difficulty + 1) * correct)
 			prof = min(prof, self.maximum_level(question_type))
-			self.put_proficiency(cont, prof)
+			self.put_proficiency(cont, prof, question_data)
 			return prof
 		else:
 			entry = self.get_student_proficiency(self.magic, cont)
@@ -158,7 +165,7 @@ class AdaptiveBaseHandler(webapp2.RequestHandler):
 			difficulty = int(self.request.get('button'))
 			prof = prof - ((3 - difficulty) * correct)
 			prof = max(prof, 0.0)
-			self.put_proficiency(cont, prof)
+			self.put_proficiency(cont, prof, question_data)
 			return prof
 	
 	#gets the students proficiency for a problem type should have latest entry as 0th index
@@ -166,9 +173,15 @@ class AdaptiveBaseHandler(webapp2.RequestHandler):
 		return Proficiency.all().filter('student_magic_number =', str(magic)).filter('question_type = ', cont).order('-time')
 	
 	#adds a students new proficiency to the database
-	def put_proficiency(self, cont, prof):
+	def put_proficiency(self, cont, prof, question_data):
+		holder=str(self.default_rw).strip('[]')
 		prof = Proficiency(student_magic_number = self.magic,
-								question_type = cont, proficiency = prof)
+								question_type = cont, 
+								proficiency = prof,
+								last_problem = question_data["typ"],
+								last_problem_level = float(question_data["lev"]),
+								right_wrong = holder 
+							)
 		prof.put()
 	
 	def get_return_data(self, score, wanted, prof):

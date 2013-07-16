@@ -21,6 +21,9 @@ class Proficiency(db.Model):
 	question_type = db.StringProperty(required=True)
 	proficiency = db.FloatProperty(required=True)
 	time = db.DateTimeProperty(auto_now_add=True)
+	last_problem = db.StringProperty()
+	last_problem_level = db.FloatProperty()
+	right_wrong = db.StringProperty(default="")
 	
 
 
