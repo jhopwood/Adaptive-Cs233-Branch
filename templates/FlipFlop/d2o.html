@@ -1,0 +1,44 @@
+{% extends "boilerplate.html" %}
+{% block bodyblock %}
+<div class="inline-div" style="text-align: left">
+    <canvas id="timing-diagram">Please get an HTML 5 compliant browser</canvas>
+    <div>Fill in the value of Q for a D flip-flop triggered by the rising edges.</div>
+    <div class="inline-div">
+        <button id="submit" class="btn btn-large">Submit</button>
+        <span id="score"></span>
+    </div>
+</div>
+{% endblock %}
+{% block jsblock %}
+<script src="/js/timingdiagram.js"></script>
+<script>
+    var canvas = $('#timing-diagram').get(0);
+
+    var questionData = JSON.parse('{{ question | safe }}'); // there's probably a better way of doing this
+    $('#readdata_num').html(questionData.readdata_num + 1); // FIXME: hacky
+    var timingDiagram = new TimingDiagram(canvas, questionData.signals, questionData.labeled_markers, questionData.unlabeled_markers);
+    timingDiagram.draw();
+
+    var submit_url = '/flip_flop/{{- submit.question_type -}}?l={{- submit.level -}}&student={{- submit.magic -}}&problem_id={{- submit.problem_id -}}';
+
+    function get_answer() {
+        answer = JSON.stringify(timingDiagram.signals[2]['values']);
+        return answer;
+    }
+
+    function correct(json_rdata) {
+        $('#correct').html('Answer: ' + json_rdata['wanted']);
+        if (json_rdata['wanted'] != get_answer()) {
+            $('#correct').css('color', 'red');
+        }
+    }
+
+    function canSubmit() {
+        return 1;
+    }
+
+    $(document).ready(function() {
+        checkSubmit();
+    });
+</script>
+{% endblock %}

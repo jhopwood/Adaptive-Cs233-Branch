@@ -1,0 +1,82 @@
+{% extends "boilerplate.html" %}
+
+{% block bodyblock %}
+  <link href="../css/msi_actions.css" rel="stylesheet">
+
+<div class="inline-div-block">
+  <div class="content">
+	<h3>{{question.description}}</h3>
+	<div class="inline-div-block">
+	<canvas id="myCanvas" width="900" height="400" style="border:1px solid #000000;">
+	</canvas>
+	</div>
+	<br>
+	
+	  <div class="p1">
+	  {{question.A1}}{{question.A1i}}{{question.SharedA}}<br>
+	  {{question.B1}}{{question.B1i}}{{question.SharedB}}<br>
+	  {{question.C1}}{{question.C1i}}{{question.SharedC}}<br>
+	  </div>
+	  <div class="p2">
+	  {{question.A2}}{{question.A2i}}{{question.SharedA2}}<br>
+	  {{question.B2}}{{question.B2i}}{{question.SharedB2}}<br>
+	  {{question.C2}}{{question.C2i}}{{question.SharedC2}}<br>
+	  </div>
+	  <div class="p3">
+	  {{question.A3}}{{question.A3i}}{{question.SharedA3}}<br>
+	  {{question.B3}}{{question.B3i}}{{question.SharedB3}}<br>
+	  {{question.C3}}{{question.C3i}}{{question.SharedC3}}<br>
+	  </div>
+	  <div class="mm">
+	  A: {{question.A4i}}<br><br>
+	  B: {{question.B4i}}<br><br>
+	  C: {{question.C4i}}<br><br>
+	  <!-- Answer: {{question.answer}} -->
+	  </div>
+	  <div class ="question">
+	  {{question.ques}}
+	  </div>
+	  <p class="choice">
+	  {{question.choice}}
+	  </p>
+  
+  <div class="sub">
+	<div class="inline-div well">
+		<div class="inline-div-block">
+		<p>Answer:</p>
+		<p><input class="nogap numeric" type="text" maxlength="5" id="answer"/></p>
+
+		</div>
+		<p id="correct"></p>
+	</div>
+	<div class="inline-div">
+		<button id="submit" class="btn btn-large disabled">Submit</button>
+		<span id="score"></span>
+	</div>
+  </div>
+  </div>
+</div>
+{% endblock %}
+
+{% block jsblock %}
+  <script src="/js/numeric.js"></script>
+  <script src="/js/msi_canvas.js"></script>
+  <script type="text/javascript">
+    $(document).ready(function() {	      
+      validate_t($('#answer'));
+      $("#answer").width(80);	  
+	
+    });
+    
+    get_answer = function() {
+      return $("#answer").attr('value');
+    }
+    function correct(json_rdata) {
+      $("#correct").html("Answer: " + json_rdata["wanted"]);
+    }
+
+    function canSubmit() {
+       return ($("#answer").attr('value').length > 0);
+    }
+  </script>
+{% endblock %}

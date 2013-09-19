@@ -28,6 +28,7 @@
 	<p>question level= {{question.lev}}</p>
 	<p>question index= {{question.index}}</p>
 	<p>right wrong array= {{question.wr}}</p>
+	<p>holder= {{submit.holder}}</p>
 	<br>
 	<br>
 {% endif %}
@@ -35,7 +36,7 @@
 {% block jsblock %}
 <script src="/js/numeric.js"></script>
   <script type="text/javascript">
-	 submit_url = "/adaptive/{{- submit.question_type -}}?student={{- submit.magic -}}";
+	 submit_url = "/adaptive/{{- submit.question_type -}}?student={{- submit.magic -}}&holder={{- submit.holder -}}";
 	 
     $(document).ready(function() {	      
 		validate_decimal($('#studentanswer'));

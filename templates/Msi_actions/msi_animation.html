@@ -1,0 +1,261 @@
+{% extends "boilerplate.html" %}
+
+{% block bodyblock %}
+  <link href="../css/msi_actions.css" rel="stylesheet">
+
+<div class="inline-div-block">
+  <div class="content">
+	<h3>{{question.description}}</h3>
+	<div class="inline-div-block">
+	<canvas id="myCanvas" width="900" height="400" style="border:1px solid #000000;">
+	</canvas>
+	</div>
+	<br>
+	
+	  <div  class="p1">
+	  <div id="q0">{{question.A1}}{{question.A1i}}{{question.SharedA}}<br></div>
+	  <div id="q1">{{question.B1}}{{question.B1i}}{{question.SharedB}}<br></div>
+	  <div id="q2">{{question.C1}}{{question.C1i}}{{question.SharedC}}<br></div>
+	  </div>
+	  <div class="p2">
+	  <div id="q3">{{question.A2}}{{question.A2i}}{{question.SharedA2}}<br></div>
+	  <div id="q4">{{question.B2}}{{question.B2i}}{{question.SharedB2}}<br></div>
+	  <div id="q5">{{question.C2}}{{question.C2i}}{{question.SharedC2}}<br></div>
+	  </div>
+	  <div class="p3">
+	  <div id="q6">{{question.A3}}{{question.A3i}}{{question.SharedA3}}<br></div>
+	  <div id="q7">{{question.B3}}{{question.B3i}}{{question.SharedB3}}<br></div>
+	  <div id="q8">{{question.C3}}{{question.C3i}}{{question.SharedC3}}<br></div>
+	  </div>
+	  <div class="mm">
+	  <div id="q9">A: {{question.A4i}}<br><br></div>
+	  <div id="q10">B: {{question.B4i}}<br><br></div>
+	  <div id="q11">C: {{question.C4i}}<br><br></div>
+	  </div>
+
+  
+  <div class="sub">
+	<div class="inline-div well">
+		<div class="inline-div-block">
+<!-- 		<p>Answer:</p>
+		<p><input class="nogap numeric" type="text" maxlength="5" id="answer"/></p> -->
+		Processor <select id =  "pro">
+				  <option value="1">1</option>
+				  <option value="2">2</option>
+				  <option value="3">3</option>
+				</select>
+		Does a <select id = "act">
+			   <option value="GETX">GETX</option>
+			   <option value="GETS">GETS</option>
+			   <option value="UPGRADE">UPGRADE</option>
+			   <option value="LOAD">LOAD</option>
+			   <option value="STORE">STORE</option>
+			   </select>
+		
+		<p>on variable <select id = "vars">
+				  <option value="A">A</option>
+				  <option value="B">B</option>
+				  <option value="C">C</option>
+				</select>
+		</p>
+		
+
+		</div>
+		<!-- <p id="correct" style='visiblity: hidden'></p> -->
+	</div>
+	<div class="inline-div">
+		<button id="submit" class="btn btn-large disabled">Random Cache </button>
+		<button id="animate">Change State</button>
+		<!-- <span id="score" style='visiblity: hidden'></span> -->
+	</div>
+  </div>
+  </div>
+</div>
+{% endblock %}
+
+{% block jsblock %}
+  <script src="/js/numeric.js"></script>
+  <script src="/js/msi_canvas.js"></script>
+  <script type="text/javascript">
+    $(document).ready(function() {	      
+		checkSubmit(true);
+    });
+    $('#animate').click(change_state);
+	//this function hides or shows the divs based on the users selection
+	function change_state(){
+		//pro is the processor act is the action or request and var is the variable the user picks
+		var t_s = $('#pro').val();
+		var t_x = $('#act').val();
+		var t_y = $('#vars').val();
+		var arr = [];
+		var j=0;
+		if(t_y == 'A'){
+			arr.push($('#q0').text().split(' '),$('#q3').text().split(' '),$('#q6').text().split(' '),$('#q9').text().split(' '));
+			j=0;
+		}
+		if(t_y == 'B'){
+			arr.push($('#q1').text().split(' '),$('#q4').text().split(' '),$('#q7').text().split(' '),$('#q10').text().split(' '));
+			j=1;
+		}
+		if(t_y == 'C'){
+			arr.push($('#q2').text().split(' '),$('#q5').text().split(' '),$('#q8').text().split(' '),$('#q11').text().split(' '));
+			j=2;
+		}
+		var mod= '';
+		var num = 0;
+		var invalid = false;
+		if(t_s =='1'){num= 1;}
+		if(t_s =='2'){num= 2;}
+		if(t_s =='3'){num= 3;}
+		//this if statement checks if the instruction is getx and the processor that is making the request doesn't have that variable in its cache. 
+		if(t_x == 'GETX' && arr[num-1].length <= 1){
+			invalid= true;
+			for(var i=0;i<arr.length-1;i++){
+				if (i == num -1){
+					continue;
+				}
+				if (arr[i][2] == 'Modified' ){
+					mod=arr[i][1];
+				}
+			};
+			if(mod != '' ){
+				arr[num-1]=(t_y + ':'+' '+mod+' '+'Modified');
+			}
+			else{
+				arr[num-1]=(t_y + ':'+' '+arr[3][1]+' '+'Modified');
+			}
+		}
+		//this if statement checks if the instruction is gets or load and the processor that is making the request doesn't have that variable in its cache. 
+		if((t_x == 'GETS' || t_x == 'LOAD') && arr[num-1].length  <= 1){
+			for(var i=0;i<arr.length-1;i++){
+				if (i == num-1){
+						continue;
+					}
+				if (arr[i][2] =='Modified' ){
+					mod=arr[i][1];
+					arr[i]=(t_y+':'+' '+mod+' '+'Shared');
+					arr[3]=(t_y+':'+' '+mod);
+				}
+			};
+			if(mod != '' ){
+				arr[num-1]=(t_y + ':'+' '+mod+' '+'Shared');
+			}
+			else{
+				arr[num-1]=(t_y + ':'+' '+arr[3][1]+' '+'Shared');
+			}
+			
+		}
+		//this if statement checks if the instruction is upgrade or store and the processor that is making the request does have that variable in its cache in a shared state. 
+		if((t_x == 'UPGRADE' || t_x == 'STORE') && arr[num-1][2] == 'Shared'){
+			invalid = true; 
+			for(var i=0;i<arr.length-1;i++){
+				if (i == num-1){
+					continue;
+				}
+				if (arr[i][2] =='Modified' ){
+					mod=arr[i][1];
+				}
+			};
+			if(mod != '' ){
+				arr[num-1]=(t_y + ':'+' '+mod+' '+'Modified');
+			}
+			else{
+				arr[num-1]=(t_y + ':'+' '+arr[3][1]+' '+'Modified');
+			}
+		}
+		//if the user makes an invalid request throw an alert
+		else{
+			if((t_x == 'GETX' || t_x == 'GETS' || t_x == 'LOAD') && $('#q'+(j+(3*(num-1)))).text() !=''){
+				alert('You cannot do a '+t_x +' when the variable is already in the cache. Please try again.');
+			}
+			if((t_x == 'UPGRADE' || t_x == 'STORE') && (arr[num-1].length <= 1 )){
+				alert('You cannot do a '+t_x +' when the variable is not in the cache. Please try again.');
+			}
+			if( (t_x == 'UPGRADE' || t_x == 'STORE')&& arr[num-1][2] == 'Modified'){
+				alert('You cannot do a '+t_x +' when the variable is already in a modified state. Please try again.');
+			}
+		}
+		//emptying all the divs of the variable selected
+		for(var i =j; i <13; i+=3){
+			if(invalid && i < 9){
+				//document.getElementById('q'+i).style.visibility = 'hidden';
+				$('#q'+i).text("");
+				$('#q'+i).html("<br>");
+			}
+			else{
+				if(t_s=='1'){
+					if (i>2 && i<6){
+						a=arr[1];
+						$('#q'+i).text(a);
+						document.getElementById('q'+i).style.visibility = 'visible';
+					}
+					if(i>5 && i<9){
+						a=arr[2];
+						$('#q'+i).text(a);
+						document.getElementById('q'+i).style.visibility = 'visible';
+					}
+				}
+				if(t_s=='2'){
+					if(i<3){
+						a=arr[0];
+						$('#q'+i).text(a);
+						document.getElementById('q'+i).style.visibility = 'visible';
+					}
+					if(i>5 && i<9){
+						a=arr[2];
+						$('#q'+i).text(a);
+						document.getElementById('q'+i).style.visibility = 'visible';
+					}
+				}
+				if(t_s=='3'){
+					if(i<3){
+						a=arr[0];
+						$('#q'+i).text(a);
+						document.getElementById('q'+i).style.visibility = 'visible';
+					}
+					if (i>2 && i<6){
+						a=arr[1];
+						$('#q'+i).text(a);
+						document.getElementById('q'+i).style.visibility = 'visible';
+					}
+				}
+				if(i>8){
+					a=String(arr[3]).replace(',',' ');
+					$('#q'+i).html(a+'<br><br>');
+					$('#q'+i).css('visibility: visible');
+				}
+			}
+		}
+		for(var i =j; i <9; i+=3){
+			if(t_s=='1' && (i<3)){
+				a=arr[0];
+				$('#q'+i).text(a);
+				document.getElementById('q'+i).style.visibility = 'visible';
+				
+			}
+			if(t_s=='2' && (i<6 && i>2)){
+				a=arr[1];
+				$('#q'+i).text(a);
+				document.getElementById('q'+i).style.visibility = 'visible';
+			}
+			if(t_s=='3' && (i>5)){
+				a=arr[2];
+				$('#q'+i).text(a);
+				document.getElementById('q'+i).style.visibility = 'visible';	
+			}
+		};
+	}
+	
+    get_answer = function() {
+      return $("#answer").attr('value');
+    }
+    function correct(json_rdata) {
+      $("#correct").html("Answer: " + json_rdata["wanted"]);
+    }
+
+    function canSubmit() {
+       return true;
+    }
+	
+  </script>
+{% endblock %}

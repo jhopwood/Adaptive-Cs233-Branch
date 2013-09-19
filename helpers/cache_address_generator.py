@@ -23,7 +23,7 @@ class AddressGenerator(object):
     """
     Converts an integer into a hex string
     """
-    return hex(iaddress)[2:]
+    return hex(iaddress)[2:len(hex(iaddress))-1]
   
   def _same_block_mask(self):
     """

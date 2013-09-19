@@ -1,0 +1,22 @@
+<div class="inline-div">
+    <p class="expressionbox">Enter the total amount of time that the <b>{{question.ask_type}}</b>
+    </p>
+    <br>
+    <p><input type="text" id="exp"/> <i>ms</i></p>
+    <p id="correct"></p>
+</div>
+<script src="/js/numeric.js"></script>
+<script type="text/javascript">
+    submit_url = "/delay/delay?q={{- submit.question_type -}}&l={{- submit.level -}}&student={{- submit.magic -}}&problem_id={{- submit.problem_id -}}";
+    get_answer = function() {
+        return document.getElementById("exp").value;
+    }
+
+    function correct(json_rdata) {
+        $("#correct").html("Answer: " + json_rdata["wanted"]);
+    }
+
+    function canSubmit() {
+      	return $("#exp").attr('value').length > 0;
+    }
+</script>

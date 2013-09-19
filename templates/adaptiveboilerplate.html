@@ -29,15 +29,15 @@
   <div class="inline-div well", id="difficultyblock">
 	<span id="prof">Your proficiency is {{ proficiency }}</span>
 	</br>
-	<button class="btn btn-large" id="easy">easy</button>
-	<button class="btn btn-large" id="medium">medium</button>
-	<button class="btn btn-large" id="hard">hard</button>
+	<button class="btn btn-large btn-primary" id="easy">easy</button>
+	<button class="btn btn-large btn-primary" id="medium">medium</button>
+	<button class="btn btn-large btn-primary" id="hard">hard</button>
   </div>
   </body>
   <!-- Placed at the end of the document so the pages load faster -->
   <script src="/js/jquery.js"></script>
   <script src="/js/bootstrap.js"></script>
-  <script src="/js/problemserver.js"></script>
+  <script src="/js/problemserveradaptive.js"></script>
   {% block jsblock %}{% endblock %}
   <script type="text/javascript">
     function submission_url() {
@@ -89,7 +89,6 @@
 	$("#hard").on("click", hard);
 	
 	//this overwrite allows me to send additional information with a press of the submission button
-	$("#submit").unbind('click');
 	$("#submit").click(function () {
 		if ($("#submit").hasClass("disabled")) { return; }
 		var answer = get_answer();
@@ -100,6 +99,7 @@
 		  $("#submit").html('done')
 		  $("#difficultyblock").show();
 		  $("#submit").removeClass('btn-primary').addClass('disabled').prop("disabled", true);
+		  $("#submit").hide();
 		  $("#score").html("Score: " + ((json_rdata["score"] === 100.0) ? '<span style="color:lime">100%</span>' : '<span style="color:red">' + json_rdata["score"] + '%</span>'));
 		  $("#prof").html("Your proficiency is "+ json_rdata["proficiency"])
 		  correct(json_rdata);

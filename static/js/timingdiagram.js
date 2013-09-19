@@ -24,6 +24,7 @@ CanvasRenderingContext2D.prototype.dashedLine = function(x1, y1, x2, y2, dashLen
     this.closePath();
 };
 
+var timingDiagram;
 
 /**
  * Timing diagram class
@@ -44,10 +45,13 @@ CanvasRenderingContext2D.prototype.dashedLine = function(x1, y1, x2, y2, dashLen
  *      because the behavior on an overlap is undefined
  */
 function TimingDiagram(canvas, signals, labeledMarkers, unlabeledMarkers) {
+    timingDiagram = this;
+    this.canvas = canvas; 
     this.ctx = canvas.getContext('2d');
     this.signals = signals;
     this.labeledMarkers = labeledMarkers;
     this.unlabeledMarkers = unlabeledMarkers;
+    canvas.onmousedown = handleButtonClick;
 
     // y coordinate of y axis
     this.yAxisY = TimingDiagram.getSignalBaseY(signals.length - 1) + TimingDiagram.topYMargin;
@@ -95,10 +99,12 @@ TimingDiagram.prototype.drawAxes = function() {
     this.ctx.stroke();
 };
 
-
 // draws all signals
 TimingDiagram.prototype.drawSignals = function() {
     for (var i = 0; i < this.signals.length; ++i) {
+        if (this.signals[i]['name'] === "Q_sol") {
+            continue;
+        }
         this.drawSignalLabel(i);
         if (this.signals[i].binary) {
             this.drawBinarySignal(i);
@@ -142,7 +148,6 @@ TimingDiagram.prototype.drawBinarySignal = function(signalNum) {
     values.pop(); // restore back to original
     this.ctx.stroke();
 };
-
 
 // draws a general (arbitrary-valued) signal
 // assumes signal's first value is at time 0
@@ -236,3 +241,75 @@ TimingDiagram.getSignalTopY = function(signalNum) {
 TimingDiagram.getTimeX = function(time) {
     return TimingDiagram.xAxisX + time * TimingDiagram.timeWidth;
 };
+
+TimingDiagram.getTime = function (x) {
+    exactTime =  Math.round((x - TimingDiagram.xAxisX)/TimingDiagram.timeWidth);
+    var closest_dist = 80;
+    var bestTime = 80;
+    for (var time = 0; time < 80; time += 5) {
+        var curr_dist = Math.abs(exactTime - time);
+        if (Math.abs(exactTime - time) < Math.abs(exactTime - bestTime)) {
+            closest_dist = Math.abs(exactTime - time);
+            bestTime = time;
+        }
+    }
+    return bestTime;
+};
+
+TimingDiagram.prototype.getSignals = function (timingdiagram){
+    return timingdiagram.signals;
+}
+
+TimingDiagram.prototype.click = function(e, x, y) {
+    console.log("click()");
+    coords = this.canvas.relMouseCoords(event);
+    canvasX = coords.x;
+    canvasY = coords.y;
+    time = TimingDiagram.getTime(x);
+    var coords = [100, 130, 190, 250, 310, 370, 430, 490, 550, 580];
+    if (canvasY >= 65 && canvasY <= 100 && canvasX >=100 && canvasX <= 580){
+        for (var i = 0; i < 9; i++) {
+            if (canvasX >= coords[i] && canvasX < coords[i+1]){
+                if (this.signals[2]['values'][i]['value'] == 1) {
+                    for (var j = i; j < 9; j++) {
+                        this.signals[2]['values'][j]['value'] = 0;
+                    }
+                } else {
+                    for (var j = i; j < 9; j++) {
+                        this.signals[2]['values'][j]['value'] = 1;
+                    }
+                }
+            }
+        }
+    }
+    this.ctx.fillStyle = 'white';
+    this.ctx.fillRect(0, 0, 580, 150);
+    this.draw();
+};
+
+function relMouseCoords(event){
+    console.log("relMouseCoords(event)");
+    "use strict";
+    var totalOffsetX = 0, totalOffsetY = 0, canvasX = 0, canvasY = 0,
+        currentElement = this;
+
+    do {
+        totalOffsetX += currentElement.offsetLeft;
+        totalOffsetY += currentElement.offsetTop;
+    } while ((currentElement = currentElement.offsetParent) !== null);
+
+    canvasX = event.pageX - totalOffsetX;
+    canvasY = event.pageY - totalOffsetY;
+
+    return {x:canvasX, y:canvasY};
+}
+
+HTMLCanvasElement.prototype.relMouseCoords = relMouseCoords;
+
+
+function handleButtonClick(e) {
+    console.log("handleButtonClick(e)");
+    var canvas = e.currentTarget;
+    var position = canvas.relMouseCoords(e);
+    timingDiagram.click(e, position.x, position.y);
+}

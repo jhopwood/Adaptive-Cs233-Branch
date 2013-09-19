@@ -43,7 +43,6 @@ class BitShiftAndMaskProblem(BaseHandler):
 		Generates the amount to shift a number by. This method tries to avoid
 		generating nothing but 0s (aka shifting by more than 31 to one side).
 		"""
-		logging.info("generate_shift_amount()")
 		adjusted = math.fabs(self.total_shift_amount)
 		return self.generator.randint(1,31-adjusted)
 
@@ -55,7 +54,6 @@ class BitShiftAndMaskProblem(BaseHandler):
 		side is an expression of level n-1 (base case of level = 0, where the left
 		hand side is x) and the right hand side is either a shift amount or a mask
 		"""
-		logging.info("generate_expression(%i)" % level)
 		op = self.generator.choice(ops)
 		ops.remove(op)
 		if level == 0:
@@ -74,7 +72,6 @@ class BitShiftAndMaskProblem(BaseHandler):
 		return shift_expression.SEExpression(lhs,op,rhs)
 
 	def maximum_level(self, question_type):
-		logging.info("maximum_level(%s)" % question_type)
 		if question_type == "c2n":
 			return 1
 		return 0
@@ -120,7 +117,6 @@ class BitShiftAndMaskProblem(BaseHandler):
 		return (score, correct_answer)
 
 	def data_for_question(self, question_type):
-		logging.info("data_for_question()")
 		if question_type == "c2n":
 			return self.data_for_c2n()
 		elif question_type == "r2c":
@@ -131,7 +127,6 @@ class BitShiftAndMaskProblem(BaseHandler):
 			return {"expression":str(expression),"expression_result":str(result)}
 	  
 	def score_student_answer(self, question_type, question_data, student_answer):
-  		logging.info("score_student_answer()")
 		if question_type == "r2c":
 			# Send the student answer through our parser and see if it comes out with
 			# the same result

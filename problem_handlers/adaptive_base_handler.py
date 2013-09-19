@@ -75,8 +75,7 @@ class AdaptiveBaseHandler(webapp2.RequestHandler):
 		#returns a string to be used to keep track of the proficiency in the database when you have multiple question types
 		#
 		#
-		# ex.  for adaptivemath.py
-		#	will return "AdaptiveMath"
+		# gets the list the the adaptive
 		
 		return str(self.__class__.__name__)
 	
@@ -87,16 +86,16 @@ class AdaptiveBaseHandler(webapp2.RequestHandler):
 				return self.get_grades(question_type)
 			
 			#gets the proficiency of the student or initializes it if no records exist
+			self.matrix_from_file()
 			entry = self.get_student_proficiency(self.magic, self.get_container())
 			if entry.count() == 0:
 				prof = 1.00
 				self.put_proficiency(self.get_container(), 1.0, {"typ":"none", "lev":0})
 			else:
 				prof = entry[0].proficiency
-			
-			
+
 			submit_data = { "question_type":question_type, "magic":self.magic,
-							"level":self.level, "problem_id":self.problem_id}
+							"level":self.level, "problem_id":self.problem_id, "holder":self.holder}
 			data = {"submit": submit_data, "question":{"button":1.0}, "proficiency":prof, "type":"get"}
 			self.render(self.template_for_question(question_type),**data)
 		else:
@@ -114,7 +113,7 @@ class AdaptiveBaseHandler(webapp2.RequestHandler):
 			
 			question_data = self.data_for_question(question_type)
 			submit_data = { "question_type":question_type, "magic":self.magic,
-							"level":self.level, "problem_id":self.problem_id}
+							"level":self.level, "problem_id":self.problem_id, "holder":self.holder}
 			data = {"submit": submit_data,"question":question_data, "proficiency":prof, "type":"post"}
 			self.render(self.template_for_question(question_type),**data)
 		else:
@@ -170,14 +169,14 @@ class AdaptiveBaseHandler(webapp2.RequestHandler):
 	
 	#gets the students proficiency for a problem type should have latest entry as 0th index
 	def get_student_proficiency(self, magic, cont):
-		return Proficiency.all().filter('student_magic_number =', str(magic)).filter('question_type = ', cont).order('-time')
+		return Proficiency.all().filter('student_magic_number =', str(magic)).filter('question_type =', cont).order('-time')
 	
 	#adds a students new proficiency to the database
 	def put_proficiency(self, cont, prof, question_data):
 		holder=str(self.default_rw).strip('[]')
 		prof = Proficiency(student_magic_number = self.magic,
 								question_type = cont, 
-								proficiency = prof,
+								proficiency = float(prof),
 								last_problem = question_data["typ"],
 								last_problem_level = float(question_data["lev"]),
 								right_wrong = holder 
@@ -328,6 +327,7 @@ class AdaptiveBaseHandler(webapp2.RequestHandler):
 		self.magic = self.request.get('student')
 		self.problem_id = int_convert(self.request.get('problem_id'), 0)
 		self.level = int_convert(self.request.get('l'), 0, 0, max_level)
+		self.holder = self.request.get('holder')
 		# return (magic, problem_id, level)
 
     # a remote gradebook wanting to know our scores; grab all database records,

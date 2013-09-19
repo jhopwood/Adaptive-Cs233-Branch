@@ -1,0 +1,51 @@
+{% extends "boilerplate.html" %}
+{% block bodyblock %}
+    <div class="inline-div-block">
+      <div class="inline-div">
+        <div class="hero-unit inline-div-block">
+        Build a(n) <span id="format_type">{{question.format_type}}</span>-type instruction.
+        </div>
+    </div>
+    <div class="inline-div">
+        <canvas width="700" height="320" id="workspace"> 
+            <p>Please get an HTML5 compliant browser</p>
+        </canvas>
+    </div>
+      <div class="inline-div">
+        <p><a class="btn btn-large btn-primary submit-space" data-toggle="modal" href="#youtubemodal" >Help Video</a></p>
+        <p><a id="submit" class="btn btn-large submit-space">Submit</a></p>
+        <p><span id="score"></span></p>
+      </div>
+    </div>
+{% endblock %}
+
+{% block jsblock %}
+<script src="/js/blocks.js"></script>
+<script type="text/javascript">
+get_answer = function() {
+    return student_format.join(",")
+}
+
+function correct(json_rdata) {
+    wanted = JSON.stringify(json_rdata['wanted'])
+    wanted = JSON.parse(wanted);
+    format_type = document.getElementById("format_type").innerHTML;
+    workspace.gradeFormat(String(format_type), wanted);
+    workspace.disableChildren();
+    //workspace.drawSolution(String(format_type));
+}
+
+evaluate_instruction = function(student_format) {
+    if (student_format.length === 0) {
+        $("#submit").removeClass('btn-primary').addClass('disabled');
+    } else {
+        $("#submit").removeClass('disabled').addClass('btn-primary');
+    }
+}
+
+$(document).ready(function() {
+    instruction_format_init("workspace"); 
+})
+
+</script>
+{% endblock %}

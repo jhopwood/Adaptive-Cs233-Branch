@@ -1,0 +1,16 @@
+<div class="inline-div">
+  {% if question.level == 0 %}
+  <img src="/img/4-to-1_sol.png" class="no-display" id="solution">
+  {% else %}
+  <img src="/img/8-to-1_sol.png" class="no-display" id="solution">
+  {% endif %}
+</div>
+<div class="inline-div">
+  {% if question.level == 1 %}
+	<canvas width="600" height="450" id="workspace">
+	{% else %}
+	<canvas width="500" height="400" id="workspace">
+	{% endif %}
+    	<p>Please get an HTML5 compliant browser</p>
+	</canvas>
+</div>

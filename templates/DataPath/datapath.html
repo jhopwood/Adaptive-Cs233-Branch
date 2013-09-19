@@ -1,0 +1,102 @@
+{% extends "boilerplate.html" %}
+
+{% block cssblock %}
+{{ super() }}
+<link href="/css/datapath-representation.css" rel="stylesheet">
+{% endblock cssblock %}
+
+{% block bodyblock %}
+  <div class="inline-div well">
+    Fill in the signals in the datapath.
+    <h3>{{ question.instruction }}</h3>
+  </div>
+  <div class="inline-div" id="drawing">
+    <canvas id="workspace" width="600" height="490">Please get an HTML 5 compliant browser</canvas>
+    {% include "DataPath/datapath_inputs.html" %}
+  </div>
+  <div class="inline-div">
+    <p id="correct">&nbsp;</p>
+    <span id="score"></span><br />
+    <button id="submit" class="btn btn-large disabled">Submit</button>
+  </div>
+{% endblock %}
+
+{% block jsblock %}
+{{ super() }}
+<script src="/js/datapath.js"></script>
+<script src="/js/numeric.js"></script>
+<script type="text/javascript">
+
+function validate_signal(elements) {
+  console.log("validate_signal");
+  validate_elements(elements, '0123x');
+}
+
+function validate_binary(elements) {
+  console.log("validate_binary()");
+  validate_elements(elements, '01x');
+}
+
+function display_signal(elements) {
+  console.log("display_signal()");
+  $("input[type=text]").focus(function() {
+    var id = String($(this).attr('id'));
+    //$("#display_signal").html(id);
+    if (id === "control_type" || id === "alu_op") {
+      $("#display_signal").html(id + ": 0123x");
+    } else {
+      $("#display_signal").html(id + ": 01x");
+    }
+  })
+}
+
+function display(id) {
+  console.log("display()");
+  $("#display_signal").html(String(id));
+}
+
+    $(document).ready(function() {
+        validate_binary($('.binary_signal'));
+        validate_signal($('.signal'));
+        checkSubmit();
+        display_signal($('.signal'));
+    });
+
+    submit_url = '/datapath/datapath?l={{- submit.level -}}&student={{- submit.magic -}}&problem_id={{- submit.problem_id -}}';
+    drawDatapath();
+
+    function canSubmit() {
+      var submit = true;
+      $(".signal").each(function() {
+        submit = submit && ($(this).val().length > 0);
+      });
+      return submit;
+    }
+
+    function get_answer() {
+      var answer = {'alu_op':"", 'itype':"", 'write_enable':"", 'control_type':"", 'mem_read':"", 'word_write_enable':"", 'byte_write_enable':"", 'byte_load':"", 'lui':"", 'slt':"", 'alu_src2':""};
+      $(".signal").each(function() {
+        var id = String($(this).attr('id'));
+        var signal = String($(this).val());
+        answer[id] = String(signal);
+      });
+      answer = JSON.stringify(answer);
+      return answer;
+    }
+
+    function correct(json_rdata) {
+      wanted = json_rdata['wanted'];
+      wanted = JSON.stringify(wanted);
+      wanted = JSON.parse(wanted);
+      student_answer = get_answer();
+      student_answer = JSON.parse(student_answer);
+      for (var key in wanted) {
+        if (wanted[key] !== student_answer[key]) {
+          $('#' + key).css('color', 'red');
+        } else {
+          $('#' + key).css('color', 'green');
+        }
+      }
+    }
+</script>
+{% endblock %}

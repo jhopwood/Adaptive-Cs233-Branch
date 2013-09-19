@@ -28,6 +28,8 @@
       })
 
       $(document).ready(checkSubmit(false));
-      submit_url = "submit?q={{- qtype -}}&l={{- level -}}&student={{- magic -}}&problem_id={{- problem_id -}}";
+      var problem = location.pathname;
+      submit_url = problem + "?l={{- submit.level -}}&student={{- submit.magic -}}&problem_id={{- submit.problem_id -}}&f={{- submit.family -}}&st={{- submit.score_type -}}";
+      
     </script>
 {% endblock %}

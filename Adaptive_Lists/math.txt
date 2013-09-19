@@ -1,0 +1,29 @@
+{
+'level':[
+( {'index':0 , 'class':Addition       , 'type':"add"     , 'level':1, 'base':-1, 'prob':1} ),
+( {'index':1 , 'class':Addition       , 'type':"add"     , 'level':2, 'base':-1, 'prob':1} ),
+( {'index':2 , 'class':Subtraction    , 'type':"subtract", 'level':1, 'base':-1, 'prob':1} ),
+( {'index':3 , 'class':Subtraction    , 'type':"subtract", 'level':2, 'base':0 , 'prob':1} ),
+( {'index':4 , 'class':Addition       , 'type':"add"     , 'level':3, 'base':0 , 'prob':1} ),
+( {'index':5 , 'class':Multiplication , 'type':"multiply", 'level':1, 'base':1 , 'prob':1} ),
+( {'index':6 , 'class':Multiplication , 'type':"multiply", 'level':2, 'base':2 , 'prob':1} ),
+( {'index':7 , 'class':Division       , 'type':"divide"  , 'level':1, 'base':3 , 'prob':1} ),
+( {'index':8 , 'class':Subtraction    , 'type':"subtract", 'level':3, 'base':3 , 'prob':1} ),
+( {'index':9 , 'class':Division       , 'type':"divide"  , 'level':2, 'base':4 , 'prob':1} ),
+( {'index':10, 'class':Multiplication , 'type':"multiply", 'level':3, 'base':4 , 'prob':1} ),
+( {'index':11, 'class':Division       , 'type':"divide"  , 'level':3, 'base':5 , 'prob':1} ) ],
+'weight':[	[1,0,0,0,0,0,0,0,0,0,0,0],
+			[0,1,0,0,0,0,0,0,0,0,0,0],
+			[0,0,1,0,0,0,0,0,0,0,0,0],
+			[0,0,0,1,0,0,0,0,0,0,0,0],
+			[0,0,0,0,1,0,0,0,0,0,0,0],
+			[0,0,0,0,0,1,0,0,0,0,0,0],
+			[0,0,0,0,0,0,1,0,0,0,0,0],
+			[0,0,0,0,0,0,0,1,0,0,0,0],
+			[0,0,0,0,0,0,0,0,1,0,0,0],
+			[0,0,0,0,0,0,0,0,0,1,0,0],
+			[0,0,0,0,0,0,0,0,0,0,1,0],
+			[0,0,0,0,0,0,0,0,0,0,0,1]
+			],
+'default':[0,0,0,0,0,0,0,0,0,0,0,0]
+}

@@ -1,0 +1,116 @@
+{% extends "boilerplate.html" %}
+
+{% block bodyblock %}
+  <link href="../css/msi_actions.css" rel="stylesheet">
+
+<div class="inline-div-block">
+  <div class="content">
+	<h3>{{question.description}}</h3>
+	<div class="inline-div-block">
+	<canvas id="myCanvas" width="900" height="400" style="border:1px solid #000000;">
+	</canvas>
+	</div>
+	<br>
+	
+	  <div class="p1">
+	  {{question.A1}}{{question.A1i}}{{question.SharedA}}<br>
+	  {{question.B1}}{{question.B1i}}{{question.SharedB}}<br>
+	  {{question.C1}}{{question.C1i}}{{question.SharedC}}<br>
+	  </div>
+	  <div class="p2">
+	  {{question.A2}}{{question.A2i}}{{question.SharedA2}}<br>
+	  {{question.B2}}{{question.B2i}}{{question.SharedB2}}<br>
+	  {{question.C2}}{{question.C2i}}{{question.SharedC2}}<br>
+	  </div>
+	  <div class="p3">
+	  {{question.A3}}{{question.A3i}}{{question.SharedA3}}<br>
+	  {{question.B3}}{{question.B3i}}{{question.SharedB3}}<br>
+	  {{question.C3}}{{question.C3i}}{{question.SharedC3}}<br>
+	  </div>
+	  <div class="mm">
+	  A: {{question.A4i}}<br><br>
+	  B: {{question.B4i}}<br><br>
+	  C: {{question.C4i}}<br><br>
+	  <!-- Answer: {{question.answer}} -->
+	  </div>
+	  <div class ="question">
+	  {{question.ques}}
+	  </div>
+	  <p class="choice">
+	  {{question.choice}}
+	  </p>
+  
+  <div class="sub">
+	<div class="inline-div well">
+		<div class="inline-div-block">
+		<h3>Processor 1 does.</h3>
+		<div class="left">
+		<p><div class="AN0"><label><input class="multi_L" type="checkbox" value="a"  id="a0" /> invalidates the block</label></div></p>
+		<p><div class="AN1"><label><input class="multi_L" type="checkbox" value="b"  id="a1"/> downgrades to shared</label></div></p>
+		<p><div class="AN2"><label><input class="multi_L" type="checkbox" value="c"  id="a2"/> sends a copy of data to p3</label></div></p>
+		<p><div class="AN3"><label><input class="multi_L" type="checkbox" value="d"  id="a3"/> sends a copy of data to memory</label></div></p>
+		<p><div class="AN4"><label><input class="single_L" type="checkbox" value="e" id="a4"  /> does nothing</label></div></p>
+		</div>
+		</div>
+	</div>
+		
+	<div class="inline-div well">
+		<div class="inline-div-block">
+		<h3> Processor 2 does.</h3>
+		<div class="left">
+		<p><div class="AN5"><label><input class="multi_R" type="checkbox" value="a"  id="a5"/> invalidates the block</label></div></p>
+		<p><div class="AN6"><label><input class="multi_R" type="checkbox" value="b"  id="a6"/> downgrades to shared</label></div></p>
+		<p><div class="AN7"><label><input class="multi_R" type="checkbox" value="c"  id="a7"/> sends a copy of data to p3</label></div></p>
+		<p><div class="AN8"><label><input class="multi_R" type="checkbox" value="d"  id="a8"/> sends a copy of data to memory</label></div></p>
+		<p><div class="AN9"><label><input class="single_R" type="checkbox" value="e"  id="a9"/> does nothing</label></div></p>
+		</div>
+		</div>
+	</div>
+	<div class="inline-div">
+		<!-- <p id="correct"></p> -->
+		<button id="submit" class="btn btn-large disabled">Submit</button>
+		<span id="score"></span>
+	</div>
+  </div>
+  </div>
+</div>
+{% endblock %}
+
+{% block jsblock %}
+  <script src="/js/numeric.js"></script>
+  <script src="/js/msi_action.js"></script>
+  <script type="text/javascript">
+    $(document).ready(function() {	      
+	 validate_check();
+
+    });
+    
+    get_answer = function() {
+		var a = '';
+		$("label").each(function(index){a += $("#a"+index).is(':checked')+','});
+		return a;
+	
+    }
+	
+    function correct(json_rdata,get_answer) {
+	  var w = json_rdata["wanted"];
+	  var wanted = w.split(',');
+	  var m = get_answer;
+	  var student_ans = m.split(',');
+	  for(var i=0; i<10;i++){
+			if(wanted[i] == 'true'){
+				$(".AN"+i).addClass("green");
+			}
+			if(student_ans[i] == 'true' && wanted[i] == 'false'){
+				$(".AN"+i).addClass("red");
+				}
+			
+	  }
+	  
+    }
+
+    function canSubmit() {
+		return (($(".multi_L").is(':checked'))||($(".single_L").is(':checked'))) && (($(".multi_R").is(':checked'))||($(".single_R").is(':checked')));
+    }
+  </script>
+{% endblock %}

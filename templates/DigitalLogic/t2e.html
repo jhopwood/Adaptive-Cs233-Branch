@@ -1,0 +1,12 @@
+{% extends "base-logic.html" %}
+
+{# THE LEFT BLOCK IS A TRUTH TABLE #}
+{% block lblock %}
+{% include "/DigitalLogic/truthtable-given.html" %}
+{% endblock %}
+
+{# THE RIGHT BLOCK IS AN EXPRESSION #}
+{% block rblock %}
+{% include "/DigitalLogic/expression-ask.html" %}
+{% endblock %}
+

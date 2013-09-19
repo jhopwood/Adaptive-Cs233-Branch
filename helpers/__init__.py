@@ -6,5 +6,7 @@ __all__ = [
   "circuit",
   "eparser",
   "expression",
-  "Parsing"
+  "kmap_simulator",
+  "Parsing",
+  "circuit_mod"
 ]

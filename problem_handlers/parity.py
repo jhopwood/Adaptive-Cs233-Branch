@@ -15,9 +15,6 @@
 # limitations under the License.
 #
 
-# TODO
-# mouseover parity bits highlight which bits are covered
-
 import base_handler
 import math
 import random
@@ -52,7 +49,6 @@ G2 = [[1, 1, 0, 1, 1, 0, 1, 0, 1, 0, 1], #p1
 all_labels = ["p1", "p2", "d1", "p4", "d2", "d3", "d4", "p8", "d5", "d6", "d7", "d8", "d9", "d10", "d11"]
 
 def matrix_mul(matrix, vec):
-	logging.info("matrix_mul()")
 	result = [0] * len(matrix)
 	for i in range(0,len(result)):
 		for j in range(0,len(vec)):
@@ -60,11 +56,9 @@ def matrix_mul(matrix, vec):
 	return result
 
 def hamming_distance(n, m):
-	logging.info("hamming_distance(%s, %s)" % (n, m))
 	return sum(d1 != d2 for d1,d2 in zip(n, m))
 
 def generate_sec_code(level):
-	logging.info("generate_sec_code()")
 	mat = G1 if level == 0 else G2
 	data_len = len(mat[0])
 	data_arr = [0] * data_len
@@ -84,14 +78,13 @@ class Parity(base_handler.BaseHandler):
 
 	def maximum_level(self, question_type):
 		if question_type == "sec":
-			return 2
-		if question_type == "hd":
-			return 3
-		if question_type == "hdc":
 			return 1
+		if question_type == "hd":
+			return 2
+		if question_type == "hdc":
+			return 0
 
 	def data_for_question(self, question_type):
-		logging.info("data_for_question(%s)" % question_type)
 		if question_type == "hdc":
 			dist = self.generator.randint(2,5)
 			temp1 = self.generator.randint(1,dist - 1)
@@ -125,7 +118,6 @@ class Parity(base_handler.BaseHandler):
 		return {"labels": labels, "flipped_string": flipped_string, "flip_index": flip_index, "length": len(labels), "odd_parity": odd_par_str}
 
 	def score_student_answer(self, question_type, question_data, student_answer):
-		logging.info("score_student_answer(%s, %s)" % (question_type, student_answer))
 		if question_type == "sec":
 			wanted = self.get_description_string(question_data)
 			if wanted == student_answer:
@@ -138,6 +130,5 @@ class Parity(base_handler.BaseHandler):
 		return (0.0, wanted)
 
 	def get_description_string(self, description):
-		logging.info("get_description_string()")
 		flip_index = description["flip_index"]
 		return str(flip_index)

@@ -87,7 +87,7 @@ $(document).ready(function() {
       if (json_rdata["score"] === 100.0) {
         $("#complete").attr("src","/img/complete.png");
       }
-      correct(json_rdata);
+      correct(json_rdata,answer);
     });
   });
 });
@@ -103,12 +103,12 @@ function draw_circle(context, x, y, radius) {
 }
 
 function draw_line(context, from_x, from_y, to_x, to_y) {
-  context.strokeStyle = 'black';
-  context.lineWidth = 2;
-  context.beginPath();
-  context.moveTo(from_x, from_y); 
+	context.strokeStyle = 'black';
+	context.lineWidth = 2;
+	context.beginPath();
+	context.moveTo(from_x, from_y); 
 	context.lineTo(to_x, to_y); 
-  context.stroke();
+	context.stroke();
 }
 
 function draw_terminal_labels(context, terminals) {
@@ -123,3 +123,24 @@ function draw_terminal_labels(context, terminals) {
   }
 }
 
+
+var terminal_labels = ["d0", "d1", "d2", "d3", "d4", "d5", "d6", "d7"];
+var select_labels = ["s0", "s1", "s2"];
+var num_inp_sel = {3: [2, 1], 6: [4, 2], 11: [8, 3]};
+
+function draw_terminal_and_select_labels(context, terminals, num_inputs, num_select) {
+  var inputs = new Array();
+  
+  for (var i = 0; i < num_inputs; i++) {
+    inputs[i] = terminal_labels[i];
+  }
+  for (i = 0; i < num_select; i++) {
+    inputs[num_inputs + i] = select_labels[i];
+  }
+  for (i = 0; i < inputs.length; i++) {
+    var num = Math.pow(2, i);
+    if (terminals & num) {
+      context.fillText(inputs[i], 9, 15 + 20*i);
+    }
+  }
+}

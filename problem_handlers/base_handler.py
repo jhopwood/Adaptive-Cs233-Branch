@@ -148,6 +148,10 @@ class BaseHandler(webapp2.RequestHandler):
         question data
       """
       self.get_basics(self.maximum_level(question_type))
+      if self.request.get('f', None) == None or int(self.request.get('f', None)) > 5:
+        self.family = random.choice([1, 2, 3, 4, 5])
+      else:
+        self.family = int(self.request.get('f'))
       # If the user wants a random question, replace question_type with
       # a random valid question type
       if question_type == "random":
@@ -159,11 +163,12 @@ class BaseHandler(webapp2.RequestHandler):
       if self.is_valid_type(question_type):
         if self.request.get('type') == 'json':
             return self.get_grades(question_type)
+        score_type = question_type
         self.initialize_random_number_generator(question_type)
         question_data = self.data_for_question(question_type)
         # logging.warn(question_data)
         submit_data = { "question_type":question_type, "magic":self.magic,
-                        "level":self.level, "problem_id":self.problem_id}
+                        "level":self.level, "problem_id":self.problem_id, "family": self.family, "score_type": score_type}
         data = {"submit": submit_data, "question":question_data}
         self.add_best_score(data, question_type)
         self.add_functions_to_jinja(self.template_extra_functions())
@@ -181,20 +186,25 @@ class BaseHandler(webapp2.RequestHandler):
       - Adding the users score into the database
       - Outputting the answer and user score in json format
       """
+      if question_type == "random":
+        question_type = self.request.get('st', None)
       if not self.is_valid_type(question_type):
         return self.response.out.write("Invalid URL")
       self.get_basics(self.maximum_level(question_type))
       student_answer = self.request.get('answer')
+      self.family = (self.request.get('f', None))
+      if self.family != None:
+        self.family = int(self.family)
       self.initialize_random_number_generator(question_type)
       question_data = self.data_for_question(question_type)
       (score,wanted) = self.score_student_answer(question_type,question_data,student_answer)
       # logging.warn({"student":student_answer,"wanted":wanted})
       # store the result in the database
       self.put_submission(question_type, int(self.level), score, self.request.get('answer'))
-      blob = json.dumps(self.get_return_data(score, wanted))
+      blob = json.dumps(self.get_return_data(score, wanted, question_data, question_type))
       self.response.out.write(blob)
       
-    def get_return_data(self, score, wanted):
+    def get_return_data(self, score, wanted, question_data, question_type):
       return {"score": score, "wanted": wanted}  
 
     def add_functions_to_jinja(self,functions):

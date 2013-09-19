@@ -1,0 +1,61 @@
+{% extends "boilerplate.html" %}
+
+{% block bodyblock %}
+  <link href="../css/datadependence.css" rel="stylesheet">
+
+<div class="inline-div-block">
+  <div class="content">
+	<h3 id="q_type">{{question.description}}</h3>
+	<div class="inline-div-block">
+	<canvas id="canvas" width="300" height="520" style="border:1px solid #000000;">
+	</canvas>
+	<div class="test0">{{question.Q1}}</div>
+	<div class="test1">{{question.Q2}}</div>
+	<div class="test2">{{question.Q3}}</div>
+	<div class="test3">{{question.Q4}}</div>
+	<div class="test4">{{question.Q5}}</div>
+	<div class="test5">{{question.Q6}}</div>
+	<div class="test6">{{question.Q7}}</div>
+	</div>
+	<br>
+  <div class="sub">
+	<div class="inline-div well">
+		<div class="inline-div-block">
+		<p>Answer:</p>
+		<p><input class="nogap numeric" type="text" maxlength="5" id="answer"/></p>
+		</div>
+		<p id="correct"></p>
+	</div>
+	<div class="inline-div">
+		<button id="submit" class="btn btn-large disabled">Submit</button>
+		<span id="score"></span>
+	</div>
+  </div>
+  </div>
+</div>
+{% endblock %}
+
+{% block jsblock %}
+  <script src="/js/numeric.js"></script>
+  <script src="/js/dependence.js"></script>
+  <script type="text/javascript">
+    $(document).ready(function() {	      
+      validate_t($('#answer'));
+      $("#answer").width(80);
+	 // var test = $(".test0").offset(); //trying to pass location of <div class="test0">
+	 // alert(test);
+    });
+    
+    get_answer = function() {
+      return $("#answer").attr('value');
+    }
+    function correct(json_rdata) {
+      $("#correct").html("Answer: " + json_rdata["wanted"]);
+    }
+
+    function canSubmit() {
+       return ($("#answer").attr('value').length > 0);
+    }
+  </script>
+{% endblock %}
+

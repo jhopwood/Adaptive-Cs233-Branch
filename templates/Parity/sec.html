@@ -1,4 +1,10 @@
 {% extends "boilerplate.html" %}
+
+{% block cssblock %}
+{{ super() }}
+<link href="/css/sec.css" rel="stylesheet">
+{% endblock %}
+
 {% block bodyblock %}
 <div class="inline-div-block">
 	<div class="inline-div well">
@@ -17,24 +23,20 @@
 				</tr>
 				<tr>
 					{% for b in question.labels %}
-					<th><center>{{b}}</center></th>
+					<th id="{{b}}" onmouseover="highlight(this.id)" onmouseout="highlight(this.id)"><center>{{b}}</center></th>
 					{% endfor %}
 				</tr>
-				<tr>
-					<div class="btn-group" data-toggle="buttons-radio">
+				<tr data-toggle="buttons-radio">
 					{% for b in question.flipped_string %}
-						<td class="nogap"><center><button id="{{ loop.index0 }}" type="button" class="btn hit" onclick="timerCheck()" data-toggle="button">{{b}}</button></center></td>
+						<td class="nogap"><center><button id="{{ loop.index0 }}" type="button" class="btn hit" onclick="timerCheck()">{{b}}</button></center></td>
 					{% endfor %}
-					</div>
 				</tr>
 			</tbody>
 		</table>
-		<div>
-			<p id="correct"><center></center></p>
-		</div>
+			<div id="correct"><center></center></div>
 	</div>
 	<div class="inline-div">
-		<button id="submit" class="btn btn-large disabled">Submit</button>
+		<button id="submit" class="btn btn-large disabled" onclick="disable_buttons()">Submit</button>
 		<br><br>
 		<span id="score"></span>
 	</div>
@@ -43,15 +45,48 @@
 {% block jsblock %}
 <script>
 
+function highlight(id) {
+	if (id.charAt(0) === "p") {
+		if (id.charAt(1) === "1") {
+			for (i = 0; i < 15; i+=2) {
+				$("#"+i).toggleClass('btn-highlight');
+			}
+		} else if (id.charAt(1) === "2") {
+			for (i = 1; i < 15; i+=4) {
+				$("#"+i).toggleClass('btn-highlight');
+				$("#"+(i+1)).toggleClass('btn-highlight');
+			}
+		} else if (id.charAt(1) === "4") {
+			for (i = 3; i < 15; i+=8) {
+				$("#"+i).toggleClass('btn-highlight');
+				$("#"+(i+1)).toggleClass('btn-highlight');
+				$("#"+(i+2)).toggleClass('btn-highlight');
+				$("#"+(i+3)).toggleClass('btn-highlight');
+			}
+		} else if (id.charAt(1) === "8") {
+			for (i = 7; i < 15; i++) {
+				$("#"+i).toggleClass('btn-highlight');
+			}
+		}
+	}
+}
+
+function disable_buttons() {
+	$.each($(".btn"), function(index, value) {
+		$(this).attr('disabled', true);
+	});
+	$("#submit").attr('disabled', false);
+}
+
 function canSubmit() {
 	var active = $(".btn.active").length;
 	return (active === 1);
 }
 
 function get_answer() {
-		var flip_index = "";
-		$.each($(".btn.active"), function(index, value) { flip_index = value.id; });
-		return flip_index;
+	var flip_index = "";
+	$.each($(".btn.active"), function(index, value) { flip_index = value.id; });
+	return flip_index;
 }
 
 function correct(json_rdata) {
@@ -70,7 +105,12 @@ function correct(json_rdata) {
 	}
 
 	var odd_parity = json_rdata["wanted"][1];
-	$("#correct").html("Parity bit(s) " + String(odd_parity) + " have odd parity");
+	console.log(odd_parity);
+	if (odd_parity.length === 2) {
+		$('#correct').html("Parity bit " + String(odd_parity) + "<br /> has odd parity");
+	} else {
+		$("#correct").html("Parity bit(s) " + String(odd_parity) + "<br /> have odd parity");
+	}
 }
 
 </script>

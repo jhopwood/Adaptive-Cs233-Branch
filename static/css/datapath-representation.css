@@ -1,0 +1,43 @@
+@import "datapath.css";
+
+#drawing
+{
+  height: 490px;
+  position: relative;
+  width: 600px;
+  text-align: left;
+}
+
+#datapath
+{
+  height: 100%;
+  width: 100%;
+}
+
+.display_signal
+{
+  height: 100px;
+  width: 400px;
+  position: absolute;
+  text-align: center;
+}
+
+.signal
+{
+  position: absolute;
+  width: 20px;
+  text-align: center;
+}
+
+.binary_signal
+{
+  position: absolute;
+  width: 20px;
+  text-align: center;
+}
+
+.pcor
+{
+  position: absolute;
+  display: inline;
+}

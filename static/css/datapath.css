@@ -1,0 +1,141 @@
+input[type="text"] {
+  background-color: #ffffff;
+  border: 1px solid #bbbbbb;
+  border-color: rgba(60, 60, 60, 0.8);
+  -webkit-box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075), 0 0 8px rgba(60, 60, 60, 0.6);
+     -moz-box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075), 0 0 8px rgba(60, 60, 60, 0.6);
+          box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075), 0 0 8px rgba(60, 60, 60, 0.6);
+  -webkit-transition: border linear 0.2s, box-shadow linear 0.2s;
+     -moz-transition: border linear 0.2s, box-shadow linear 0.2s;
+       -o-transition: border linear 0.2s, box-shadow linear 0.2s;
+          transition: border linear 0.2s, box-shadow linear 0.2s;
+}
+
+input[type="text"]:focus {
+  border-color: rgba(82, 168, 236, 0.8);
+  outline: 0;
+  outline: thin dotted \9;
+  /* IE6-9 */
+
+  -webkit-box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075), 0 0 8px rgba(82, 168, 236, 0.6);
+     -moz-box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075), 0 0 8px rgba(82, 168, 236, 0.6);
+          box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075), 0 0 8px rgba(82, 168, 236, 0.6);
+}
+
+.display_signal {
+  top: 40px;
+	left: 300px;
+	font-family: Monaco, Menlo, Consolas, "Courier New", monospace;
+	font-size: 20px;
+	color: #52a8ec;
+}
+
+.control_type {
+	top: 60px;
+	left: 280px;
+}
+
+.itype {
+	top: 247px;
+	left: 187px;
+}
+
+.write_enable {
+	top: 230px;
+	left: 215px;
+}
+
+.lui {
+	top: 295px;
+	left: 175px;
+}
+
+.alu_src2 {
+	top: 264px;
+	left: 320px;
+}
+
+.alu_op {
+	top: 266px;
+	left: 348px;
+}
+
+.slt {
+	top: 265px;
+	left: 417px;
+}
+
+.mem_read {
+	top: 333px;
+	left: 370px;
+}
+
+.word_write_enable {
+	top: 220px;
+	left: 430px;
+}
+
+.byte_write_enable {
+	top: 243px;
+	left: 430px;
+}
+
+.byte_load {
+	top: 338px;
+	left: 490px;
+}
+
+.pcontrol_type {
+	top: 50px;
+	left: 285px;
+}
+
+.pitype {
+	top: 215px;
+	left: 225px;
+}
+
+.pwrite_enable {
+	top: 215px;
+	left: 280px;
+}
+
+.plui {
+	top: 280px;
+	left: 215px;
+}
+
+.palu_src2 {
+	top: 245px;
+	left: 355px;
+}
+
+.palu_op {
+	top: 250px;
+	left: 400px;
+}
+
+.pslt {
+	top: 250px;
+	left: 450px;
+}
+
+.pmem_read {
+	top: 315px;
+	left: 405px;
+}
+
+.pword_write_enable {
+	top: 205px;
+	left: 470px;
+}
+
+.pbyte_write_enable {
+	top: 225px;
+	left: 470px;
+}
+
+.pbyte_load {
+	top: 320px;
+	left: 525px;	
+}

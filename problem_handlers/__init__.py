@@ -1,11 +1,8 @@
 __all__ = [
     "base_handler",
-	"adaptive_base_handler",
+    "delay",
     "digital_logic",
     "number_based_problem",
-    "numbers_conversion",
-    "arithmetic",
-    "bitwise_logical",
     "number_bit_length",
     "mips_representation",
     "register_file",
@@ -16,5 +13,12 @@ __all__ = [
     "rf",
     "ieee_32",
     "parity",
-	"adaptivemath"
+    "msi_actions",
+    "datadependence",
+    "flip_flop",
+    "instruction_format",
+    "datapath",
+    "build",
+	"adaptivemath",
+	"true_false"
 ]

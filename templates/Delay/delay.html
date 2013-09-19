@@ -1,0 +1,18 @@
+{% extends "base-logic.html" %}
+
+{# THE LEFT BLOCK IS A CIRCUIT #}
+{% block lblock %}
+{% include "/DigitalLogic/circuit-given.html" %}
+{% endblock %}
+
+{# THE RIGHT BLOCK IS AN ANSWER THING #}
+{% block rblock %}
+{% include "/Delay/delay-right.html" %}
+{% endblock %}
+
+{% block jsblock %}
+{{ super() }}
+<script type="text/javascript">
+{% include "/Delay/circuit-given-delay.js" %}
+</script>
+{% endblock %}

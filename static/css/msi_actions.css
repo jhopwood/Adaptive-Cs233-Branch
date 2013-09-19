@@ -1,0 +1,17 @@
+div.content{position:absolute;}
+div.sub{position:absolute;top:500px;}
+div.left{text-align:left;}
+div.green{background-color:lime;}
+div.red{background-color:#FF3300;}
+div.p1{font-family:arial;font-size:15px;display:block;width:150px;position: relative;left:35px;top:-335px;z-index:-1;}
+
+div.p2{font-family:arial;font-size:15px;display:block;width:150px;position: relative;left:235px;top:-395px;z-index:-1;}
+
+div.p3{font-family:arial;font-size:15px;display:block;width:150px;position: relative;left:435px;top:-455px;z-index:-1;}
+
+div.mm{font-family:arial;font-size:15px;width:150px;position: relative;left:640px;top:-530px;z-index:-1;}
+
+div.question{font-family:arial;font-size:17px;display:block;position: relative;left:10px;top:-465px;z-index:-1;}
+
+p.choice{font-family:arial;font-size:16px;display:block;white-space:pre-line;max-width:850px; position:relative;left:15px;top:-480px;z-index:-1;}
+

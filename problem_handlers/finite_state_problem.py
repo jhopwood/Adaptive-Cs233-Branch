@@ -61,8 +61,8 @@ class FiniteStateProblem(BaseHandler):
     overall = sum(scores.values()) / len(scores)  
     return (float(overall), json.dumps(correct_expressions))
 
-  def get_return_data(self, score, wanted):
-    base_dict = super(FiniteStateProblem, self).get_return_data(score, wanted)
+  def get_return_data(self, score, wanted, question_data, question_type):
+    base_dict = super(FiniteStateProblem, self).get_return_data(score, wanted, question_data, question_type)
     base_dict["scores"] = json.dumps(self.problem_scores)
     return base_dict
 

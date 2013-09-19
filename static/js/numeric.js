@@ -10,6 +10,22 @@ function validate_h(elements) {
     validate_elements(elements, '0123456789ABCDEFabcdef');
 }
 
+function validate_t(elements) {
+	validate_elements(elements, 'abcde');
+}
+
+function validate_check() {
+		
+	$(".multi_L").change(function(){if( $(".multi_L").is(':checked')){ $(".single_L").attr('checked',false);checkSubmit();}else{ checkSubmit();}});
+
+	$(".single_L").change(function(){if( $(".single_L").is(':checked')){ $(".multi_L").attr('checked',false);checkSubmit();}else{ checkSubmit();}});
+		
+	$(".multi_R").change(function(){if( $(".multi_R").is(':checked')){ $(".single_R").attr('checked',false);checkSubmit();}else{ checkSubmit();}});
+
+	$(".single_R").change(function(){if( $(".single_R").is(':checked')){ $(".multi_R").attr('checked',false);checkSubmit();}else{ checkSubmit();}});
+	
+}
+
 function validate_decimal(elements) {
     validate_elements(elements, '.-0123456789');
 }

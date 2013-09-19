@@ -15,7 +15,6 @@ class WebHomework(db.Model):
     duedate = db.DateTimeProperty(required=True)
     questions = db.TextProperty(required=True)
 
-	
 class Proficiency(db.Model):
 	student_magic_number = db.StringProperty(required=True)
 	question_type = db.StringProperty(required=True)
@@ -24,6 +23,11 @@ class Proficiency(db.Model):
 	last_problem = db.StringProperty()
 	last_problem_level = db.FloatProperty()
 	right_wrong = db.StringProperty(default="")
-	
+
+class TrueFalseQuestion(db.Model):
+	number = db.IntegerProperty(required=True)
+	question = db.StringProperty(required=True)
+	answer = db.StringProperty(required=True)
+	explanation = db.StringProperty(required=True)
 
 

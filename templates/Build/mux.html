@@ -1,0 +1,19 @@
+{% extends "base-logic.html" %}
+
+{# THE LEFT BLOCK IS A CIRCUIT #}
+{% block lblock %}
+{% include "/Build/mux-given.html" %}
+{% endblock %}
+
+{# THE RIGHT BLOCK IS A CIRCUIT #}
+{% block rblock %}
+{% include "/Build/mux-ask.html" %}
+{% endblock %}
+
+{% block jsblock %}
+{{ super() }}
+<script src="/js/gates.js"></script>
+<script type="text/javascript">
+{% include "/Build/mux-ask.js" %}
+</script>
+{% endblock %}

@@ -1,0 +1,18 @@
+{% extends "base-logic.html" %}
+
+{# THE LEFT BLOCK IS A CIRCUIT #}
+{% block lblock %}
+{% include "/DigitalLogic/verilog-given.html" %}
+{% endblock %}
+
+{# THE RIGHT BLOCK IS AN EXPRESSION #}
+{% block rblock %}
+{% include "/DigitalLogic/truthtable-ask.html" %}
+{% endblock %}
+
+{% block jsblock %}
+{{ super() }}
+<script type="text/javascript">
+{% include "/DigitalLogic/truthtable-ask.js" %}
+</script>
+{% endblock %}

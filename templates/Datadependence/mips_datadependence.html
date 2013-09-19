@@ -1,0 +1,59 @@
+{% extends "boilerplate.html" %}
+
+{% block bodyblock %}
+  <link href="../css/datadependence.css" rel="stylesheet">
+
+<div class="inline-div-block">
+  <div class="content">
+	<h3 id="q_type">Label all {{question.description}}</h3>
+	<div class="inline-div-block">
+	<canvas id="canvas" width="400" height="450" style="border:1px solid #000000;">
+	</canvas>
+	<div class="test0">{{question.question0}}</div>
+	<div class="test1">{{question.question1}}</div>
+	<div class="test2">{{question.question2}}</div>
+	<div class="test3">{{question.question3}}</div>
+	<div class="test4">{{question.question4}}</div>
+	<div class="test5">{{question.question5}}</div>
+	<div class="test6">{{question.question6}}</div>
+	</div>
+	<br>
+  <div class="sub">
+	
+		<p id="correct" style="visibility:hidden"></p>
+	</div>
+	<div class="inline-div">
+		<button id="submit" class="btn btn-large disabled">Submit</button>
+		<button  class="btn btn-large btn-info" onclick="alert('To draw an arrow just click and drag from letter to letter. To delete an arrow click on it and hit the delete key.')">Instructions</button>
+		<span id="score"></span>
+		<div id="question_type" style="visibility:hidden">{{question.question_type}}</div>
+	</div>
+  </div>
+</div>
+{% endblock %}
+
+{% block jsblock %}
+  <script src="/js/numeric.js"></script>
+  <script src="/js/dependence.js"></script>
+  <script type="text/javascript">
+    $(document).ready(function() {
+    });
+    
+    get_answer = function() {
+		var ans = '';
+		for(var i=0;i<links.length;i++){
+			ans+='('+links[i].nodeA.pos2+', '+links[i].nodeB.pos2+')';
+		}
+		return ans;
+    }
+    function correct(json_rdata) {
+		$("#correct").html("" + json_rdata["wanted"]);
+	} 
+			
+     
+ 
+    function canSubmit() {
+       return (links.length > 0);
+    }
+  </script>
+{% endblock %}

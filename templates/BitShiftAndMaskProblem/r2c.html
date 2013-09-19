@@ -1,29 +1,28 @@
 {% extends "boilerplate.html" %}
 {% block bodyblock %}
 <div class="inline-div well">
-  <code>uint32_t x =</code>
-  <h4> 
+  <tt>uint32_t x =</tt>
+   
     {% for i in range(32) %}
-      a<sub><small>{{ 31 - i }}</small></sub>
+      <b>a</b><sub><small>{{ 31 - i }}</small></sub>
     {% endfor %}
-  </h4>
-  <code>uint32_t y =</code>
-  <h4>
+
+  <br><br>
+  <tt>uint32_t y =</tt>
     {% for bit in question.expression_result.split("|") %}
       {% if bit.startswith("a") %}
-        {{ bit[0] }}<sub><small>{{ bit[1:] }}</small></sub>
+        <b>{{ bit[0] }}</b><sub><small>{{ bit[1:] }}</small></sub>
       {% else %}
         {{ bit }}
       {% endif %}
     {% endfor %}
-  </h4>
   <p id="correct"></p>
 </div>
 <div class="inline-div">
-  <p>Write code for y:&nbsp;<input class="nogap" type="text" id="answer"/></p>
+  <p>Write code for <tt>y</tt>:&nbsp;<input class="nogap" type="text" id="answer"/></p>
   <pre>Vocabulary: ()<>|&x[0-9]
-    Hex numbers should have a 0x prefix. 
-    Binary should be prefixed with 0b</pre>
+    Hex numbers should be prefixed with 0x. 
+    Binary numbers should be prefixed with 0b.</pre>
   <button id="submit" class="btn btn-large disabled">Submit</button>
   <span id="score"></span>
 </div>
@@ -31,7 +30,7 @@
 {% block jsblock %}
   <script type="text/javascript">
     $(document).ready(function() {
-      $('#answer').keyup(function(e) { checkSubmit(); });
+      $('#answer').keyup(function(e) { submitOnEnter(e); checkSubmit(); });
     });
 
     get_answer = function() {
