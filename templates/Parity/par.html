@@ -1,0 +1,34 @@
+{% extends "boilerplate.html" %}
+{% block bodyblock %}
+    <div class="inline-div">What should the parity bit, <b>P</b>, be set for <b>{{-question.even_odd-}}</b> parity?</div>
+    <div class="inline-div well">
+      <h4> {{ question.num1-}}P </h4>
+    </div>
+    <div class="btn-group single-btn-group" data-toggle="buttons-radio">
+      <button id="btn0" class="btn" onclick="timerCheck()">0</button>
+      <button id="btn1" class="btn" onclick="timerCheck()">1</button>
+    </div>      
+    <div class="inline-div">
+      <button id="submit" class="btn btn-large disabled">Submit</button>
+      <span id="score"></span>
+    </div>
+    <p id="correct"></p>
+{% endblock %}
+{% block jsblock %}
+  <script type="text/javascript">
+    get_answer = function() {
+      return $("#btn1").hasClass('active') ? 1 : 0;
+    }
+    function correct(json_rdata) {
+      $("#correct").html("Answer: Because there are " + json_rdata["wanted"][1] + 
+      			 " ones, the parity bit should be set to " + json_rdata["wanted"][0] + 
+                         " for {{ question.even_odd }} parity");
+    }
+    function canSubmit() {
+      return ($(".btn.active").length === 1);
+    }
+    function timerCheck() {
+      setTimeout(function () { checkSubmit(); }, 30);
+    }      
+  </script>
+{% endblock %}
