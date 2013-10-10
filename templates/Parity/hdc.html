@@ -1,14 +1,15 @@
 {% extends "boilerplate.html" %}
 {% block bodyblock %}
-    <div class="inline-div">What Hamming distance is required to have</div>
+    <div class="inline-div">
+    <div class="inline-div">What Hamming distance (between valid code words) is required to have</div>
     <div class="inline-div well">
       <h4> {{ question.detection }}-bit </h4>
     </div>
-    <div class="inline-div">detection and</div>
+    <div class="inline-div"><b>detection</b> and</div>
     <div class="inline-div well">
       <h4> {{ question.correction }}-bit </h4>
     </div>
-    <div class="inline-div">correction?
+    <div class="inline-div"><b>correction</b>?</div><p>
     <div class="inline-div well">
       <input class="nogap" maxlength="15" width="120" type="text" id="answer"/>
       <h4><p id="correct"></p></h4>
@@ -16,6 +17,7 @@
     <div class="inline-div">
       <button id="submit" class="btn btn-large disabled">Submit</button>
       <span id="score"></span>
+    </div>
     </div>
 {% endblock %}
 {% block jsblock %}

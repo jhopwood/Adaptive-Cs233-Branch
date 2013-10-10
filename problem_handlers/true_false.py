@@ -25,6 +25,19 @@ import number_based_problem
 
 from models import TrueFalseQuestion
 
+TrueFalseQuestion(number = 17, question = "Parity enables the correction of single-bit errors.", answer = "false", 
+                  explanation = "Parity only enables the <b>detection</b> of single-bit errors.  It doesn't have enough information to determine which bit has been flipped.").put()
+
+TrueFalseQuestion(number = 18, question = "Odd parity means that the data word including its parity bit should have an odd number of ones", answer = "true", 
+                  explanation = "In even parity, the parity bit is set so that there are even number of ones in the data word and the parity bit combined.  In odd parity, the parity bit is set so that there are an odd number of ones.").put()
+
+TrueFalseQuestion(number = 19, question = "SECDED stands for Single-bit Error Correction, Double-bit Error Detection", answer = "true", 
+                  explanation = "That's what it stands for.  SECDED is commonly used for ECC memory because the most common failure mode is a single-bit flip to a memory word.  SECDED is able to correct these errors, and in the unlikely event that a second error occurs before the first one is corrected, we can at least detect the data corruption.").put()
+
+TrueFalseQuestion(number = 20, question = "Parity requires a Hamming distance of 1 between valid code words.", answer = "false", 
+                  explanation = "Parity requires a Hamming distance of 2 between valid code words, so that there is an invalid code word between valid code words to enable 1-bit error detection.").put()
+
+
 
 class TrueFalse(base_handler.BaseHandler):
 	__my_random__ = None

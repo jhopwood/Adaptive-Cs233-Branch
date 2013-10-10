@@ -55,6 +55,9 @@ def matrix_mul(matrix, vec):
 			result[i] = (result[i] + matrix[i][j] * vec[j]) % 2
 	return result
 
+def ones(n):
+        return sum(int(x) for x in n);
+
 def hamming_distance(n, m):
 	return sum(d1 != d2 for d1,d2 in zip(n, m))
 
@@ -71,26 +74,45 @@ def generate_sec_code(level):
 
 class Parity(base_handler.BaseHandler):
 	valid_types = [
+		"par",     # Compute the parity
 		"sec",     # Single-Error Correcting
-		"hd",      # Hamming Distance
+		"hd",      # Hamming Distance (What is the distance)
+		"hd2", 	   # Hamming Distance (What is an example number at that distance)
 		"hdc"	   # How much Hamming Distance can be tolerated
 	]
 
 	def maximum_level(self, question_type):
+		if question_type == "par":
+			return 1
 		if question_type == "sec":
 			return 1
 		if question_type == "hd":
 			return 2
+		if question_type == "hd2":
+			return 1
 		if question_type == "hdc":
 			return 0
 
 	def data_for_question(self, question_type):
+		if question_type == "par":
+			self.length = 2 ** (self.level + 2)
+			upper_bound = (2 ** self.length) - 1
+			num1 = bin(self.generator.randint(0, upper_bound))[2:].zfill(self.length)
+			even_odd = self.generator.randint(0, 1);
+			ones_count = ones(num1);			
+			odd_parity = ones(num1) % 2;			
+			return {"num1": num1, "even_odd": "even" if even_odd else "odd", "length": self.length, 
+                                "ones_count": ones_count, "parity": 1 if even_odd == odd_parity else 0}
+
 		if question_type == "hdc":
-			dist = self.generator.randint(2,5)
-			temp1 = self.generator.randint(1,dist - 1)
-			temp2 = dist - temp1 - 1
-			detection = temp1 if temp1 >= temp2 else temp2
-			correction = dist - detection - 1
+			correction = self.generator.randint(0,3)
+			detection = (correction if correction != 0 else 1) + self.generator.randint(0,3)
+		        dist = correction + detection + 1
+			## dist = self.generator.randint(2,5)
+			## temp1 = self.generator.randint(1,dist - 1)
+			## temp2 = dist - temp1 - 1
+			## detection = temp1 if temp1 >= temp2 else temp2
+			## correction = dist - detection - 1
 			return {"dist": str(dist), "detection": detection, "correction": correction}
 
 		if question_type == "hd":
@@ -100,6 +122,13 @@ class Parity(base_handler.BaseHandler):
 			num2 = bin(self.generator.randint(1, upper_bound))[2:].zfill(self.length)
 			dist = hamming_distance(num1, num2)
 			return {"num1": num1, "num2": num2, "dist": str(dist), "length": self.length}
+
+		if question_type == "hd2":
+			self.length = 2 ** (self.level + 2)
+			upper_bound = (2 ** self.length) - 1
+			num1 = bin(self.generator.randint(1, upper_bound))[2:].zfill(self.length)
+			dist = self.generator.randint(1, self.length)
+			return {"num1": num1, "dist": str(dist), "length": self.length}
 
 		labels = all_labels[0:7] if self.level == 0 else all_labels
 
@@ -120,11 +149,18 @@ class Parity(base_handler.BaseHandler):
 	def score_student_answer(self, question_type, question_data, student_answer):
 		if question_type == "sec":
 			wanted = self.get_description_string(question_data)
-			if wanted == student_answer:
-				return (100.0, (wanted, question_data["odd_parity"]))
-			return (0.0, (wanted, question_data["odd_parity"]))
+			return (100.0 if wanted == student_answer else 0.0, (wanted, question_data["odd_parity"]))
+		elif question_type == "hd2":
+		        answer = hamming_distance(question_data["num1"], student_answer)
+			wanted = question_data["dist"]
+			return (100.0 if int(answer) == int(wanted) else 0.0, answer)
 		elif question_type.startswith("hd"):
 			wanted = question_data["dist"]
+		elif question_type == "par":
+		        wanted = question_data["parity"]
+			logging.warn(wanted)
+			logging.warn(student_answer)
+			return (100.0 if int(wanted) == int(student_answer) else 0.0, (wanted, question_data["ones_count"]))
 		if wanted == student_answer:
 			return (100.0, wanted)
 		return (0.0, wanted)

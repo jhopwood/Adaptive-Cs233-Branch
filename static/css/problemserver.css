@@ -60,6 +60,10 @@ td.nogap, input.nogap {
   margin-bottom: 0px;
 }
 
+.single-btn-group {
+  padding: 15px 10px 10px 10px;
+}
+
 .inline-div-nopadwidth {
   display: inline-block;
   margin: 0 .1em 0 .1em;	

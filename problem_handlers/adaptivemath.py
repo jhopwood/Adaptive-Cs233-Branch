@@ -44,7 +44,7 @@ class AdaptiveMath(adaptive_base_handler.AdaptiveBaseHandler):
 	#get the information on problems from a file
 	def matrix_from_file(self):
 		#this gets the level matrix from a text file have been told eval is dangerous
-		s = open('Adaptive_Lists\math.txt', 'r').read()
+		s = open('Adaptive_Lists/math.txt', 'r').read()
 		holder = eval(s)
 		self.level_matrix=holder['level']
 		self.weight_matrix=holder['weight']
