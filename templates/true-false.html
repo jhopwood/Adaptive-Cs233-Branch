@@ -1,13 +1,12 @@
 {% extends "boilerplate.html" %}
 {% block bodyblock %}
 	{% if submit.question_type == "question" %}
-		<div class="inline-div">True False</div>
+		<div class="inline-div"></div>
 			<div class="inline-div well">
 			  <h4>{{- question.question -}}</h4>
-			</div>
-		<div class="inline-div well">
-			<p><input type="text" id="decision"/></p>
-			<p><b>true or false</b></p>
+		<tr data-toggle="buttons-radio">
+			<td class="nogap"><center><button id="true" type="button" class="btn hit" onclick="truebutton(true)">True</button><button id="false" type="button" class="btn hit" onclick="truebutton(false)">False</button></center></td>
+		</tr>
 			<span id="wanted"></span>
 		</div>
 		<div class="inline-div">
@@ -44,19 +43,31 @@
 		<script src="/js/numeric.js"></script>
 		  <script type="text/javascript">
 		  
-			function validate_tf(elements) {
-				validate_elements(elements, 'truefalse');
-			}
-		  
 		  
 			$(document).ready(function() {	      
-			  validate_tf($('#decision'));
 			});
+				
+			function truebutton(button)	{
+				if(button == true){	
+					$('#true').toggleClass('active');
+					$('#false').removeClass('active');
+				}
+				else{
+					$('#false').toggleClass('active');
+					$('#true').removeClass('active');
+				}
+				checkSubmit();
+			}
 
-			submit_url = "/true_false/{{- submit.question_type -}}?l={{- submit.level -}}&student={{- submit.magic -}}&problem_id={{- submit.problem_id -}}&problem={{- question.problem -}}";
+			submit_url = "/true_false/{{- submit.question_type -}}?l={{- submit.level -}}&student={{- submit.magic -}}&problem_id={{- question.problem -}}&problem={{- question.problem -}}";
 			
 			get_answer = function() {
-			  var ret=$("#decision").attr('value');
+			  if($('#true').hasClass('active')){
+				var ret='true';
+			  }
+			  else{
+				var ret='false';
+			  }
 			  return ret;
 			}
 			function correct(json_rdata) {
@@ -65,7 +76,7 @@
 			}
 
 			function canSubmit() {
-			   return ($("#decision").attr('value') === "true" || $("#decision").attr('value') === "false");
+			   return true;
 			}
 		  </script>
 	{% else %}
