@@ -1,19 +1,19 @@
 {% extends "boilerplate.html" %}
 {% block bodyblock %}
 	{% if submit.question_type == "question" %}
-		<div class="inline-div"></div>
-			<div class="inline-div well">
+		<div class="inline-div">
+			<div class="inline-div well">True/False Question:<br>
 			  <h4>{{- question.question -}}</h4>
 		<tr data-toggle="buttons-radio">
 			<td class="nogap"><center><button id="true" type="button" class="btn hit" onclick="truebutton(true)">True</button><button id="false" type="button" class="btn hit" onclick="truebutton(false)">False</button></center></td>
 		</tr>
-			<span id="wanted"></span>
 		</div>
 		<div class="inline-div">
-			<button id="submit" class="btn btn-large disabled">Submit</button>
+			<button id="submit" class="btn btn-large disabled">Submit</button><br>
 			<span id="score"></span>
 		</div>
-		<span id="explanation"></span>
+		<p id="explanation"></p>
+		</div>
 	{% else %}
 		<h1><span id="success"></span></h1>
 		<div class="inline-div well">
@@ -48,7 +48,7 @@
 			});
 				
 			function truebutton(button)	{
-				if(button == true){	
+				if (button == true){	
 					$('#true').toggleClass('active');
 					$('#false').removeClass('active');
 				}
@@ -62,7 +62,7 @@
 			submit_url = "/true_false/{{- submit.question_type -}}?l={{- submit.level -}}&student={{- submit.magic -}}&problem_id={{- question.problem -}}&problem={{- question.problem -}}";
 			
 			get_answer = function() {
-			  if($('#true').hasClass('active')){
+			  if ($('#true').hasClass('active')) {
 				var ret='true';
 			  }
 			  else{
@@ -71,8 +71,21 @@
 			  return ret;
 			}
 			function correct(json_rdata) {
-			  $("#explanation").html("Why-> " + json_rdata["wanted"]["explanation"]);
-			  $("#wanted").html("wanted-> " + json_rdata["wanted"]["answer"]);
+			  $("#explanation").html("<B>Explanation:</B> " + "You don't deserve one!");
+			  $(".btn.active").addClass('btn-incorrect');
+			  $("#" + json_rdata["wanted"]["answer"]).removeClass('btn-incorrect').addClass('btn-correct');
+			  // $.each($(".btn.active"), function(index, value) { 
+			  //     if (value.id == json_rdata["wanted"]["answer"]) {
+			  //        value.('btn-correct');
+			  //     } else {
+			  //        value.addClass('btn-incorrect');
+			  //     }
+			  // }
+			  // );
+			  $("#explanation").html("<B>Explanation:</B> " + json_rdata["wanted"]["explanation"]);
+
+
+			  // $("#wanted").html("wanted-> " + json_rdata["wanted"]["answer"]);
 			}
 
 			function canSubmit() {

@@ -130,3 +130,6 @@ td.nogap, input.nogap {
      font-size: 15px;
 }
 
+#explanation {
+     width: 800px;	
+}
