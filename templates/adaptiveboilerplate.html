@@ -102,8 +102,8 @@
 	$("#medium").on("click", medium);
 	$("#hard").on("click", hard);
 	
-	$("#difficultyblock").width($("#questionblock").width()+83);
-	$("#questionblock").height($("#bar").height());
+	$("#difficultyblock").width($("#questionblock").width()+85);
+	$("#questionblock").height($("#bar").height()-5);
 	
 	//this overwrite allows me to send additional information with a press of the submission button
 	$("#submit").click(function () {
@@ -118,13 +118,11 @@
 		  $("#submit").removeClass('btn-primary').addClass('disabled').prop("disabled", true);
 		  $("#submit").hide();
 		  $("#score").html("Score: " + ((json_rdata["score"] === 100.0) ? '<span style="color:lime">100%</span>' : '<span style="color:red">' + json_rdata["score"] + '%</span>'));
-		  if(json_rdata["score"] > 0)
-		  {
-			//changeit("{{ proficiency }}" - json_rdata["proficiency"])
+		  if(json_rdata["score"] < 100){
+			changeit(10*(json_rdata["proficiency"]-"{{ proficiency }}"))
 		  }
-		  else
-		  {
-			//changeit("{{ proficiency }}" - json_rdata["proficiency"])
+		  else{
+			changeit(10*(json_rdata["proficiency"]-"{{ proficiency }}"))
 		  }
 		  $("#prof").html("Your proficiency is "+ json_rdata["proficiency"]);
 		  correct(json_rdata);

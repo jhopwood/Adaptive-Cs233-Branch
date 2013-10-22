@@ -81,16 +81,12 @@ class TrueFalse(base_handler.BaseHandler):
 		if(question_type == "add"):
 			return {}
 		
-		problem=int(self.request.get('problem'))
+		problem=self.problem_id
 		
 		recieved=self.get_question(problem)
 		
-		#handle if the question is not found
-		#if(recieved.size() == 0):
-		#	self.response.out.write("Invalid question")
-		
 		#problem number is returned for use in the submit url
-		return {"question":recieved[0].question, "answer":recieved[0].answer, "explanation":recieved[0].explanation, "problem":problem}
+		return {"question":recieved[0].question, "answer":recieved[0].answer, "explanation":recieved[0].explanation, "problem":problem, "use":"question"}
 		
 		
 	def get_question(self, number):

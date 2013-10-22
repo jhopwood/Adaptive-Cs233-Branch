@@ -68,13 +68,16 @@ class AdaptiveMath(adaptive_base_handler.AdaptiveBaseHandler):
 		classtype = question_data['class']
 		tester = classtype(self)
 		tester.magic = self.magic
-		tester.problem_id = self.problem_id
+		tester.problem_id = question_data['id']
 		tester.level = question_data['lev']
 		
 		(tscore,twanted)=tester.score_student_answer(question_data['typ'], wanted, answer)
 		
 		if (tscore == 100):
-			self.default_rw[question_data['index']]=self.default_rw[question_data['index']]+1
+			if(classtype == TrueFalse):
+				self.default_rw[question_data['index']]=self.default_rw[question_data['index']]+100
+			else:
+				self.default_rw[question_data['index']]=self.default_rw[question_data['index']]+1
 		else:
 			self.default_rw[question_data['index']]=self.default_rw[question_data['index']]-1
 		
@@ -92,13 +95,13 @@ class AdaptiveMath(adaptive_base_handler.AdaptiveBaseHandler):
 		
 		#get the adjusted level based on the button pressed and their proficiency rating
 		prof = self.get_adjusted_level(question_type, question_type)
-		(typ, lev, index, cla)=self.newproblem_selector(prof, question_type)
+		(typ, lev, index, cla, id)=self.newproblem_selector(prof, question_type)
 		
 		#giving the new class a the self objects of the current class
 		classtype = cla
 		tester = classtype(self)
 		tester.magic = self.magic
-		tester.problem_id = self.problem_id
+		tester.problem_id = id
 		tester.level = lev
 		
 		tester.generator.seed(self.generate_index(self.magic, self.level, self.problem_id, question_type))
@@ -108,7 +111,7 @@ class AdaptiveMath(adaptive_base_handler.AdaptiveBaseHandler):
 		ret=tester.data_for_question(typ)
 		
 		#adds on usefull information 
-		ret.update({"button":self.request.get('button'), "typ":typ, "lev":lev, "wr":self.default_rw, "index":index, "class":cla})
+		ret.update({"button":self.request.get('button'), "typ":typ, "lev":lev, "wr":self.default_rw, "index":index, "class":cla, "id":id})
 			
 		return ret
 	
@@ -134,7 +137,7 @@ class AdaptiveMath(adaptive_base_handler.AdaptiveBaseHandler):
 			magic_num=magic_num-weighted_rw[indexer]
 			indexer=indexer+1
 			if(magic_num < 0):
-				return (i['type'], int(i['level']), i['index'],i['class'] )
+				return (i['type'], int(i['level']), i['index'],i['class'], i['id'] )
 			
 	def get_right_wrong(self, question_type):
 		#gets string from datastore and converts it an array of strings

@@ -91,11 +91,11 @@ class AdaptiveBaseHandler(webapp2.RequestHandler):
 			data = {"submit": submit_data, "question":{"button":1.0}, "proficiency":prof, "type":"get"}
 			self.render(self.template_for_question(question_type, 'basetype'),**data)
 		else:
-			self.response.out.write("Invalid URL")
+			self.response.out.write("Invalid URL 1")
 	
 	def post(self, question_type):
 		if not self.is_valid_type(question_type):
-			return self.response.out.write("Invalid URL")
+			return self.response.out.write("Invalid URL 2")
 			
 		if self.request.get('type') == "question request":
 			self.get_basics(self.maximum_level(question_type))
@@ -181,10 +181,12 @@ class AdaptiveBaseHandler(webapp2.RequestHandler):
 		
 	def template_for_question(self,question_type, subproblem):
 		#if we know the subproblem type we ask for it if not we default to the baseplate
-		if (subproblem != 'basetype'):
-			return "Adaptive/" + question_type + "/" + subproblem + ".html"
-		else:
+		if (subproblem == 'basetype'):
 			return "adaptiveboilerplate.html"
+		elif(subproblem == 'question'):
+			return "Adaptive/true-false.html"
+		else:
+			return "Adaptive/" + question_type + "/" + subproblem + ".html"
 	
 	#ends changes from base_handler	
 	##################################################################################

@@ -28,7 +28,7 @@
 				</tr>
 				<tr data-toggle="buttons-radio">
 					{% for b in question.flipped_string %}
-						<td class="nogap"><center><button id="{{ loop.index0 }}" type="button" class="btn hit" onclick="timerCheck()">{{b}}</button></center></td>
+						<td class="nogap"><center><button id="{{ loop.index0 }}" type="button" class="btn hit parbtn" onclick="timerCheck()">{{b}}</button></center></td>
 					{% endfor %}
 				</tr>
 			</tbody>
@@ -72,9 +72,10 @@ function highlight(id) {
 }
 
 function disable_buttons() {
-	$.each($(".btn"), function(index, value) {
-		$(this).attr('disabled', true);
-	});
+	$(".parbtn").attr('disabled', true);
+	//$.each($(".btn"), function(index, value) {
+	//	$(this).attr('disabled', true);
+	//});
 	$("#submit").attr('disabled', false);
 }
 

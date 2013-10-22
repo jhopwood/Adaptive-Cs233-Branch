@@ -1,6 +1,6 @@
-{% extends "boilerplate.html" %}
+{% extends "adaptiveboilerplate.html" %}
 {% block bodyblock %}
-	{% if submit.question_type == "question" %}
+	{% if question.use == "question" %}
 		<div class="inline-div">
 			<div class="inline-div well">True/False Question:<br>
 			  <h4>{{- question.question -}}</h4>
@@ -39,7 +39,7 @@
 	{% endif %}
 {% endblock %}
 {% block jsblock %}
-	{% if submit.question_type == "question" %}
+	{% if question.use == "question" %}
 		<script src="/js/numeric.js"></script>
 		  <script type="text/javascript">
 		  
@@ -59,8 +59,6 @@
 				checkSubmit();
 			}
 
-			submit_url = "/true_false/{{- submit.question_type -}}?l={{- submit.level -}}&student={{- submit.magic -}}&problem_id={{- question.problem -}}&problem={{- question.problem -}}";
-			
 			get_answer = function() {
 			  if ($('#true').hasClass('active')) {
 				var ret='true';
@@ -74,14 +72,6 @@
 			  $("#explanation").html("<B>Explanation:</B> " + "You don't deserve one!");
 			  $(".btn.active").addClass('btn-incorrect');
 			  $("#" + json_rdata["wanted"]["answer"]).removeClass('btn-incorrect').addClass('btn-correct');
-			  // $.each($(".btn.active"), function(index, value) { 
-			  //     if (value.id == json_rdata["wanted"]["answer"]) {
-			  //        value.('btn-correct');
-			  //     } else {
-			  //        value.addClass('btn-incorrect');
-			  //     }
-			  // }
-			  // );
 			  $("#explanation").html("<B>Explanation:</B> " + json_rdata["wanted"]["explanation"]);
 
 
@@ -106,8 +96,6 @@
 			  validate_tf($('#answer'));
 			});
 
-			submit_url = "/true_false/{{- submit.question_type -}}?l={{- submit.level -}}&student={{- submit.magic -}}&problem_id={{- submit.problem_id -}}";
-			
 			get_answer = function() {
 			  var num=$("#number").attr('value');
 			  var quest=$("#question").attr('value');
