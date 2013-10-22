@@ -1,0 +1,127 @@
+{% extends "boilerplate.html" %}
+{% block bodyblock %}
+	{% if submit.question_type == "question" %}
+		<div class="inline-div">
+			<div class="inline-div well">True/False Question:<br>
+			  <h4>{{- question.question -}}</h4>
+		<tr data-toggle="buttons-radio">
+			<td class="nogap"><center><button id="true" type="button" class="btn hit" onclick="truebutton(true)">True</button><button id="false" type="button" class="btn hit" onclick="truebutton(false)">False</button></center></td>
+		</tr>
+		</div>
+		<div class="inline-div">
+			<button id="submit" class="btn btn-large disabled">Submit</button><br>
+			<span id="score"></span>
+		</div>
+		<p id="explanation"></p>
+		</div>
+	{% else %}
+		<h1><span id="success"></span></h1>
+		<div class="inline-div well">
+			<p><input type="text" id="number"/></p>
+			<p><b>number</b></p>
+		</div>
+		<div class="inline-div well">
+			<p><input type="text" id="question"/></p>
+			<p><b>question</b></p>
+		</div>
+		<div class="inline-div well">
+			<p><input type="text" id="explanation"/></p>
+			<p><b>explanation</b></p>
+		</div>
+		<div class="inline-div well">
+			<p><input type="text" id="answer"/></p>
+			<p><b>true or false</b></p>
+		</div>
+		<div class="inline-div">
+			<button id="submit" class="btn btn-large disabled">Submit</button>
+			<span id="score"></span>
+		</div>
+	{% endif %}
+{% endblock %}
+{% block jsblock %}
+	{% if submit.question_type == "question" %}
+		<script src="/js/numeric.js"></script>
+		  <script type="text/javascript">
+		  
+		  
+			$(document).ready(function() {	      
+			});
+				
+			function truebutton(button)	{
+				if (button == true){	
+					$('#true').toggleClass('active');
+					$('#false').removeClass('active');
+				}
+				else{
+					$('#false').toggleClass('active');
+					$('#true').removeClass('active');
+				}
+				checkSubmit();
+			}
+
+			submit_url = "/true_false/{{- submit.question_type -}}?l={{- submit.level -}}&student={{- submit.magic -}}&problem_id={{- question.problem -}}&problem={{- question.problem -}}";
+			
+			get_answer = function() {
+			  if ($('#true').hasClass('active')) {
+				var ret='true';
+			  }
+			  else{
+				var ret='false';
+			  }
+			  return ret;
+			}
+			function correct(json_rdata) {
+			  $("#explanation").html("<B>Explanation:</B> " + "You don't deserve one!");
+			  $(".btn.active").addClass('btn-incorrect');
+			  $("#" + json_rdata["wanted"]["answer"]).removeClass('btn-incorrect').addClass('btn-correct');
+			  // $.each($(".btn.active"), function(index, value) { 
+			  //     if (value.id == json_rdata["wanted"]["answer"]) {
+			  //        value.('btn-correct');
+			  //     } else {
+			  //        value.addClass('btn-incorrect');
+			  //     }
+			  // }
+			  // );
+			  $("#explanation").html("<B>Explanation:</B> " + json_rdata["wanted"]["explanation"]);
+
+
+			  // $("#wanted").html("wanted-> " + json_rdata["wanted"]["answer"]);
+			}
+
+			function canSubmit() {
+			   return true;
+			}
+		  </script>
+	{% else %}
+	<script src="/js/numeric.js"></script>
+		  <script type="text/javascript">
+		  
+			function validate_tf(elements) {
+				validate_elements(elements, 'truefalse');
+			}
+			
+			
+			$(document).ready(function() {	      
+			  validate_d($('#number'));
+			  validate_tf($('#answer'));
+			});
+
+			submit_url = "/true_false/{{- submit.question_type -}}?l={{- submit.level -}}&student={{- submit.magic -}}&problem_id={{- submit.problem_id -}}";
+			
+			get_answer = function() {
+			  var num=$("#number").attr('value');
+			  var quest=$("#question").attr('value');
+			  var ans=$("#answer").attr('value');
+			  var exp=$("#explanation").attr('value');
+			  return {number:num, question:quest , answer:ans, explanation:exp};
+			}
+			function correct(json_rdata) {
+			  $("#success").html(json_rdata["wanted"]);
+			}
+
+			function canSubmit() {
+			   return $("#number").attr('value').length >0 & $("#question").attr('value').length >0 && $("#answer").attr('value').length >0 && $("#explanation").attr('value').length >0;
+			}
+		  </script>
+	{% endif %}
+{% endblock %}

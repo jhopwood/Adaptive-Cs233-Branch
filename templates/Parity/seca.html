@@ -1,0 +1,117 @@
+{% extends "adaptiveboilerplate.html" %}
+
+{% block cssblock %}
+{{ super() }}
+<link href="/css/sec.css" rel="stylesheet">
+{% endblock %}
+
+{% block bodyblock %}
+<div class="inline-div-block">
+	<div class="inline-div well">
+		<p>Given the bitstring  <tt>{{question.flipped_string}}</tt>,<p>
+		<p>which bit is in error?</p>
+		<p>Assume even parity.</p>
+
+	</div>
+	<div class="inline-div">
+		<table class="table table-striped table-bordered table-condensed" id="sec">
+			<tbody>
+				<tr>
+				{% for i in range(1, question.length + 1) %}
+					<th><center>{{i}}</center></th>
+				{% endfor %}
+				</tr>
+				<tr>
+					{% for b in question.labels %}
+					<th id="{{b}}" onmouseover="highlight(this.id)" onmouseout="highlight(this.id)"><center>{{b}}</center></th>
+					{% endfor %}
+				</tr>
+				<tr data-toggle="buttons-radio">
+					{% for b in question.flipped_string %}
+						<td class="nogap"><center><button id="{{ loop.index0 }}" type="button" class="btn hit" onclick="timerCheck()">{{b}}</button></center></td>
+					{% endfor %}
+				</tr>
+			</tbody>
+		</table>
+			<div id="correct"><center></center></div>
+	</div>
+	<div class="inline-div">
+		<button id="submit" class="btn btn-large disabled" onclick="disable_buttons()">Submit</button>
+		<br><br>
+		<span id="score"></span>
+	</div>
+</div>
+{% endblock %}
+{% block jsblock %}
+<script>
+
+function highlight(id) {
+	if (id.charAt(0) === "p") {
+		if (id.charAt(1) === "1") {
+			for (i = 0; i < 15; i+=2) {
+				$("#"+i).toggleClass('btn-highlight');
+			}
+		} else if (id.charAt(1) === "2") {
+			for (i = 1; i < 15; i+=4) {
+				$("#"+i).toggleClass('btn-highlight');
+				$("#"+(i+1)).toggleClass('btn-highlight');
+			}
+		} else if (id.charAt(1) === "4") {
+			for (i = 3; i < 15; i+=8) {
+				$("#"+i).toggleClass('btn-highlight');
+				$("#"+(i+1)).toggleClass('btn-highlight');
+				$("#"+(i+2)).toggleClass('btn-highlight');
+				$("#"+(i+3)).toggleClass('btn-highlight');
+			}
+		} else if (id.charAt(1) === "8") {
+			for (i = 7; i < 15; i++) {
+				$("#"+i).toggleClass('btn-highlight');
+			}
+		}
+	}
+}
+
+function disable_buttons() {
+	$.each($(".btn"), function(index, value) {
+		$(this).attr('disabled', true);
+	});
+	$("#submit").attr('disabled', false);
+}
+
+function canSubmit() {
+	var active = $(".btn.active").length;
+	return (active === 1);
+}
+
+function get_answer() {
+	var flip_index = "";
+	$.each($(".btn.active"), function(index, value) { flip_index = value.id; });
+	return flip_index;
+}
+
+function correct(json_rdata) {
+	var flip_string = json_rdata["wanted"][0];
+	var answer_string = get_answer();
+	var flip_index = parseInt(flip_string, 10);
+	var answer = parseInt(answer_string, 10);
+	
+	for (var i = 0 ; i < 15; i++) {
+		if (i === flip_index) {
+			$("#"+i).addClass('active btn-correct');
+		}
+		else {
+			$("#"+i).addClass('btn-incorrect');
+		}
+	}
+
+	var odd_parity = json_rdata["wanted"][1];
+	console.log(odd_parity);
+	if (odd_parity.length === 2) {
+		$('#correct').html("Parity bit " + String(odd_parity) + "<br /> has odd parity");
+	} else {
+		$("#correct").html("Parity bit(s) " + String(odd_parity) + "<br /> have odd parity");
+	}
+}
+
+</script>
+{% endblock %}

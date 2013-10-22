@@ -65,19 +65,11 @@ class AdaptiveBaseHandler(webapp2.RequestHandler):
 	##################################################################################
 	# this is very similar to the base problem handler new or altered methods are put here
 	#
-	#functions that must be implemented for get and post to be used
-	#	needs "button":self.request.get('button'), "typ":typ, "lev":lev} added to return and get_adjusted_level to be called when determining level lev and typ are the levels and type of the question your selector chooses-->  def data_for_question(self, question_type):
-	#	Shouldn't need altered--> maximum_level(self, question_type):
-	#	Shouldn't need altered--> score_student_answer(self,question_type,question_data,student_answer):
-	#	Shouldn't need altered--> template_for_question(self, question_type):  as long as the template html is changed to extend adaptivebase.html
+	#	Get template for question assumes that you have created a new .html file for each problem type
+	#	    Where the name has an a before the .html 
+	#		exp. in parity hd.html  becomes hda.html where hda.html uses adaptiveboilerplate instead of the boilerplate used in hd.html
+	#		
 	
-	def get_container(self):
-		#returns a string to be used to keep track of the proficiency in the database when you have multiple question types
-		#
-		#
-		# gets the list the the adaptive
-		
-		return str(self.__class__.__name__)
 	
 	def get(self, question_type):
 		self.get_basics(self.maximum_level(question_type))
@@ -86,18 +78,18 @@ class AdaptiveBaseHandler(webapp2.RequestHandler):
 				return self.get_grades(question_type)
 			
 			#gets the proficiency of the student or initializes it if no records exist
-			self.matrix_from_file()
-			entry = self.get_student_proficiency(self.magic, self.get_container())
+			self.matrix_from_file(question_type)
+			entry = self.get_student_proficiency(self.magic, question_type)
 			if entry.count() == 0:
 				prof = 1.00
-				self.put_proficiency(self.get_container(), 1.0, {"typ":"none", "lev":0})
+				self.put_proficiency(question_type, 1.0, {"typ":"none", "lev":0})
 			else:
 				prof = entry[0].proficiency
 
 			submit_data = { "question_type":question_type, "magic":self.magic,
 							"level":self.level, "problem_id":self.problem_id, "holder":self.holder}
 			data = {"submit": submit_data, "question":{"button":1.0}, "proficiency":prof, "type":"get"}
-			self.render(self.template_for_question(question_type),**data)
+			self.render(self.template_for_question(question_type, 'basetype'),**data)
 		else:
 			self.response.out.write("Invalid URL")
 	
@@ -108,20 +100,20 @@ class AdaptiveBaseHandler(webapp2.RequestHandler):
 		if self.request.get('type') == "question request":
 			self.get_basics(self.maximum_level(question_type))
 			
-			entry = self.get_student_proficiency(self.magic, self.get_container())
+			entry = self.get_student_proficiency(self.magic, question_type)
 			prof=entry[0].proficiency
 			
 			question_data = self.data_for_question(question_type)
 			submit_data = { "question_type":question_type, "magic":self.magic,
 							"level":self.level, "problem_id":self.problem_id, "holder":self.holder}
 			data = {"submit": submit_data,"question":question_data, "proficiency":prof, "type":"post"}
-			self.render(self.template_for_question(question_type),**data)
+			self.render(self.template_for_question(question_type, question_data['typ']),**data)
 		else:
 			self.get_basics(self.maximum_level(question_type))
 			student_answer = self.request.get('answer')
 			question_data = self.data_for_question(question_type)
 			(score,wanted) = self.score_student_answer(question_type,question_data,student_answer)
-			prof=self.alter_proficiency(question_type, score, self.get_container(), question_data)
+			prof=self.alter_proficiency(question_type, score, question_type, question_data)
 			# store the result in the database
 			self.put_submission(question_type, 0, score, self.request.get('answer'))
 			blob = json.dumps(self.get_return_data(score, wanted, prof))
@@ -187,7 +179,13 @@ class AdaptiveBaseHandler(webapp2.RequestHandler):
 		return {"score": score, "wanted": wanted, "proficiency":prof}
 		
 		
-		
+	def template_for_question(self,question_type, subproblem):
+		#if we know the subproblem type we ask for it if not we default to the baseplate
+		if (subproblem != 'basetype'):
+			return "Adaptive/" + question_type + "/" + subproblem + ".html"
+		else:
+			return "adaptiveboilerplate.html"
+	
 	#ends changes from base_handler	
 	##################################################################################
     
@@ -256,15 +254,6 @@ class AdaptiveBaseHandler(webapp2.RequestHandler):
 		for their answer, and the second element is the 'correct' answer
 		"""
 		return (0.0,"")
-      
-	def template_for_question(self,question_type):
-		"""
-		Returns the path to template to render relative to the templates directory
-      
-		Does not need to be overridden by subclasses, but can be if the author 
-		would like more control of their templates
-		"""
-		return self.__class__.__name__ + "/" + question_type + ".html"
     
 	def add_functions_to_jinja(self,functions):
 		d = {}

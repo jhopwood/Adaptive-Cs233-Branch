@@ -28,6 +28,8 @@ from add import Addition
 from sub import Subtraction
 from mul import Multiplication
 from div import Division
+from parity import Parity
+from true_false import TrueFalse
 
 from models import Proficiency
 
@@ -35,16 +37,18 @@ from models import Proficiency
 
 class AdaptiveMath(adaptive_base_handler.AdaptiveBaseHandler):
 	__my_random__ = None
-	valid_types = ["math"]
+	valid_types = ["math","parity"]
 	#TODO
 	#Refactor
 	#No chance for last problem
+	#move matrix_from_file to abh along with the imports
 	
 
 	#get the information on problems from a file
-	def matrix_from_file(self):
+	def matrix_from_file(self, question_type):
 		#this gets the level matrix from a text file have been told eval is dangerous
-		s = open('Adaptive_Lists/math.txt', 'r').read()
+		location='Adaptive_Lists\\'+ question_type +'.txt'
+		s = open(location, 'r').read()
 		holder = eval(s)
 		self.level_matrix=holder['level']
 		self.weight_matrix=holder['weight']
@@ -55,27 +59,19 @@ class AdaptiveMath(adaptive_base_handler.AdaptiveBaseHandler):
 	def maximum_level(self, question_type):
 		return 100
 	
-	#used by the basehelper to render the page
-	def template_for_question(self, question_type):
-		return "adaptivemath.html"
-	
 	#used by the basehelper to grade the students score also modifies the right_wrong array
 	def score_student_answer(self,question_type,question_data,student_answer):
 		wanted = question_data
 		answer = student_answer
 		
-		#get the adjusted level based on the button pressed and their proficiency rating
-		prof = self.get_adjusted_level(question_type, self.get_container())
-		(typ, lev, index, cla)=self.newproblem_selector(prof)
-		
 		#giving the new class a the self objects of the current class
-		classtype = cla
+		classtype = question_data['class']
 		tester = classtype(self)
 		tester.magic = self.magic
 		tester.problem_id = self.problem_id
-		tester.level = lev
+		tester.level = question_data['lev']
 		
-		(tscore,twanted)=tester.score_student_answer(question_type,wanted, answer)
+		(tscore,twanted)=tester.score_student_answer(question_data['typ'], wanted, answer)
 		
 		if (tscore == 100):
 			self.default_rw[question_data['index']]=self.default_rw[question_data['index']]+1
@@ -90,13 +86,13 @@ class AdaptiveMath(adaptive_base_handler.AdaptiveBaseHandler):
 		if self.__my_random__ == None:
 			self.__my_random__ = random.Random()
 		self.__my_random__.seed(self.generate_index(self.magic, 0, self.problem_id, question_type))
-		
+
 		#gets the matrixes of classes to use
-		self.matrix_from_file()
+		self.matrix_from_file(question_type)
 		
 		#get the adjusted level based on the button pressed and their proficiency rating
-		prof = self.get_adjusted_level(question_type, self.get_container())
-		(typ, lev, index, cla)=self.newproblem_selector(prof)
+		prof = self.get_adjusted_level(question_type, question_type)
+		(typ, lev, index, cla)=self.newproblem_selector(prof, question_type)
 		
 		#giving the new class a the self objects of the current class
 		classtype = cla
@@ -105,19 +101,22 @@ class AdaptiveMath(adaptive_base_handler.AdaptiveBaseHandler):
 		tester.problem_id = self.problem_id
 		tester.level = lev
 		
+		tester.generator.seed(self.generate_index(self.magic, self.level, self.problem_id, question_type))
+
+		
 		#gets question data from subclass
-		ret=tester.data_for_question("add")
+		ret=tester.data_for_question(typ)
 		
 		#adds on usefull information 
-		ret.update({"button":self.request.get('button'), "typ":typ, "lev":lev, "wr":self.default_rw, "index":index})
+		ret.update({"button":self.request.get('button'), "typ":typ, "lev":lev, "wr":self.default_rw, "index":index, "class":cla})
 			
 		return ret
 	
 	
 	#will eventually provide the question type and level to the data_for_question method
-	def newproblem_selector(self, prof):
+	def newproblem_selector(self, prof, question_type):
 		#gets array of rights and wrongs and fits the values to the curve
-		weighted_rw = self.get_weight(12)
+		weighted_rw = self.get_weight(len(self.default_rw), question_type)
 			
 		holder=[]
 		probsum=-1
@@ -137,9 +136,9 @@ class AdaptiveMath(adaptive_base_handler.AdaptiveBaseHandler):
 			if(magic_num < 0):
 				return (i['type'], int(i['level']), i['index'],i['class'] )
 			
-	def get_right_wrong(self):
+	def get_right_wrong(self, question_type):
 		#gets string from datastore and converts it an array of strings
-		entry = self.get_student_proficiency(self.magic, self.get_container())
+		entry = self.get_student_proficiency(self.magic, question_type)
 		rightwrong = entry[0].right_wrong
 		rightwrong = rightwrong.split(',')
 		
@@ -155,9 +154,9 @@ class AdaptiveMath(adaptive_base_handler.AdaptiveBaseHandler):
 		
 		
 	#n is the size of the level matrix   TODO look at generalizing this method to not need an N	
-	def get_weight( self, n):
+	def get_weight( self, n, question_type):
 		res = []
-		rightwrong = self.get_right_wrong()
+		rightwrong = self.get_right_wrong(question_type)
 		
 		for i in range(n):
 			temp = 0

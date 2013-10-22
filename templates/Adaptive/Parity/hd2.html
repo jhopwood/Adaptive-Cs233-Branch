@@ -1,0 +1,36 @@
+{% extends "adaptiveboilerplate.html" %}
+{% block bodyblock %}
+    <div class="inline-div">Write a <b>{{question.length-}}-bit number</b> that is a <b>Hamming distance of {{question.dist}}</b> from the provided number?</div>
+    <div class="inline-div well">
+      <h4> {{ question.num1 }} </h4>
+      <input class="nogap" maxlength="{{- question.length -}}" width="30" type="text" id="answer"/>
+    </div>
+    <div class="inline-div">
+      <button id="submit" class="btn btn-large disabled">Submit</button><br>
+      <span id="score"></span>
+    </div>
+    <p id="correct"></p>
+
+{% endblock %}
+{% block jsblock %}
+  <script src="/js/numeric.js"></script>
+  <script type="text/javascript">
+    $("#answer").width({{ 8.2*question.length }}).css('margin-right','-2px');
+
+    $(document).ready(function() {
+      validate_d($('#answer'));
+    });
+
+    get_answer = function() {
+      return $("#answer").attr('value');
+    }
+
+    function correct(json_rdata) {
+      $("#correct").html("Answer: the actual Hamming distance between {{question.num1}} and " + $("#answer").attr('value') + " is " + json_rdata["wanted"]);
+    }
+
+    function canSubmit() {
+       return $("#answer").attr('value').length == {{question.length}};
+    }
+  </script>
+{% endblock %}

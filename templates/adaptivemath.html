@@ -1,7 +1,6 @@
 {% extends "adaptiveboilerplate.html" %}
 {% block questionblock %}
 {% if type == "get" %}
-<p>You must choose a dificulty level before the question will display . Easy, Medium, and Hard take your proficiency into account</p>
 {% else %}
 	<br>
 	<div class="inline-div">What is the answer to </div>
@@ -24,11 +23,6 @@
 		<button id="submit" class="btn btn-large disabled">Submit</button>
 		<span id="score"></span>
 	</div>
-	<p>question type= {{question.typ}}</p>
-	<p>question level= {{question.lev}}</p>
-	<p>question index= {{question.index}}</p>
-	<p>right wrong array= {{question.wr}}</p>
-	<p>holder= {{submit.holder}}</p>
 	<br>
 	<br>
 {% endif %}
@@ -40,7 +34,6 @@
 	 
     $(document).ready(function() {	      
 		validate_decimal($('#studentanswer'));
-		$("#difficultyblock").width($("#questionblock").width());
     });	
     
     get_answer = function() {

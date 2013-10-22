@@ -1,0 +1,40 @@
+{% extends "adaptiveboilerplate.html" %}
+{% block bodyblock %}
+    <div class="inline-div">What Hamming distance is required to have</div>
+    <div class="inline-div well">
+      <h4> {{ question.detection }}-bit </h4>
+    </div>
+    <div class="inline-div">detection and</div>
+    <div class="inline-div well">
+      <h4> {{ question.correction }}-bit </h4>
+    </div>
+    <div class="inline-div">correction?
+    <div class="inline-div well">
+      <input class="nogap" maxlength="15" width="120" type="text" id="answer"/>
+      <h4><p id="correct"></p></h4>
+    </div>
+    <div class="inline-div">
+      <button id="submit" class="btn btn-large disabled">Submit</button>
+      <span id="score"></span>
+    </div>
+{% endblock %}
+{% block jsblock %}
+  <script src="/js/numeric.js"></script>
+  <script type="text/javascript">
+
+    $(document).ready(function() {
+      validate_d($('#answer'));
+    });
+
+    get_answer = function() {
+      return $("#answer").attr('value');
+    }
+    function correct(json_rdata) {
+      $("#correct").html("Answer: " + json_rdata["wanted"]);
+    }
+
+    function canSubmit() {
+       return $("#answer").attr('value').length > 0;
+    }
+  </script>
+{% endblock %}

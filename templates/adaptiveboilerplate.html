@@ -18,11 +18,25 @@
       <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
     <![endif]-->
   </head>
-
+  <canvas id="bar" width="80" height="272" style="background-color:white"></canvas>
   <body class="no-left-right-padding">
   {% block youtubeblock %}{% endblock %}
   <div class="inline-div well", id="questionblock">
+	{% if type == "get" %}
+	<p>You must choose a dificulty level before the question will display . Easy, Medium, and Hard take your proficiency into account</p>
+	{% else %}
+	{% block bodyblock %}{% endblock %}
 	{% block questionblock %}{% endblock %}
+	<p>question type= {{question.typ}}</p>
+	<p>question level= {{question.lev}}</p>
+	<p>question index= {{question.index}}</p>
+	<p>right wrong array= {{question.wr}}</p>
+	<p>question num1={{question.num1}}</p>
+	<p>question num2={{question.num2}}</p>
+	<p>question ans={{question.dist}}</p>
+	<p>question ans={{question.dist}}</p>
+	<p>holder={{submit.question_type}}</p>
+	{% endif %}
   </div>
   </br>
   <!-- this sets up the buttons for dificulty selection -->
@@ -88,22 +102,166 @@
 	$("#medium").on("click", medium);
 	$("#hard").on("click", hard);
 	
+	$("#difficultyblock").width($("#questionblock").width()+83);
+	$("#questionblock").height($("#bar").height());
+	
 	//this overwrite allows me to send additional information with a press of the submission button
 	$("#submit").click(function () {
 		if ($("#submit").hasClass("disabled")) { return; }
 		var answer = get_answer();
 		$.post(submission_url(), {answer: answer, button: {{- question.button -}} }, 
 		function(rdata) {
-		  json_rdata = JSON.parse(rdata)
+		  json_rdata = JSON.parse(rdata);
 		  $("#submit").unbind('click');
-		  $("#submit").html('done')
+		  $("#submit").html('done');
 		  $("#difficultyblock").show();
 		  $("#submit").removeClass('btn-primary').addClass('disabled').prop("disabled", true);
 		  $("#submit").hide();
 		  $("#score").html("Score: " + ((json_rdata["score"] === 100.0) ? '<span style="color:lime">100%</span>' : '<span style="color:red">' + json_rdata["score"] + '%</span>'));
-		  $("#prof").html("Your proficiency is "+ json_rdata["proficiency"])
+		  if(json_rdata["score"] > 0)
+		  {
+			//changeit("{{ proficiency }}" - json_rdata["proficiency"])
+		  }
+		  else
+		  {
+			//changeit("{{ proficiency }}" - json_rdata["proficiency"])
+		  }
+		  $("#prof").html("Your proficiency is "+ json_rdata["proficiency"]);
 		  correct(json_rdata);
 		});
 	});
+	
+	///////////////////////////////////////////////////////////////////////////////////////////////////////
+	 window.requestAnimFrame = (function(){
+      return  (
+              function(/* function */ callback, ddy, cur){
+                touts.push(setTimeout(function(){callback(ddy-1, cur+1);}, 1000 / 60));
+              });
+    })();
+
+	var bw = 23, bh = 254, maxl = 250, stx = 12, sty = 12;
+
+	var current = "{{ proficiency }}"*10;
+	var dy = 0;
+	var goal = 200;
+	var canvas = document.getElementById('bar');
+	var ctx = canvas.getContext("2d");
+	var touts=new Array();
+	
+	init();
+
+	function animateUp(ddy, cur)
+	{
+		if (ddy>0)
+		{
+			//alert(ddy);
+			requestAnimFrame(animateUp, ddy, cur);
+			ctx.translate(0, -1);
+			ctx.fillStyle="green";
+			
+			if (cur==goal)
+			{
+				thick = 0;
+			}
+			else
+				thick = 1;
+				
+			ctx.fillRect(stx, sty, bw-4, thick);
+		}
+		else
+		{
+			ctx.restore();
+			init();
+		}
+	}
+
+	function animateDown(ddy, cur)
+	{
+		if (ddy>0)
+		{
+			requestAnimFrame(animateDown, ddy, cur);
+			ctx.translate(0, 1);
+			ctx.fillStyle="red";
+			ctx.fillRect(stx, sty, bw-4, 1);
+		}
+		else
+		{
+			ctx.restore();
+			init();
+		}
+	}
+
+	function drawText()
+	{
+		ctx.save();
+		ctx.translate(0,maxl-goal);
+		//draw Goal
+		ctx.fillStyle="black";
+		ctx.font="15px Arial";
+		ctx.fillText("Goal",bw*2-4, sty+5);
+		//draw goal line
+		ctx.beginPath();
+		ctx.strokeStyle="red";
+		ctx.moveTo(stx-1,sty);
+		ctx.lineTo(bw+9,sty);
+		ctx.stroke();
+		
+		ctx.restore();	
+	}
+
+	function drawCurrent()
+	{
+		//draw frame
+		ctx.clearRect(0, 0, canvas.width, canvas.height);
+		ctx.lineWidth=2;
+		ctx.strokeStyle='black';
+		ctx.strokeRect(10, 10, bw, bh);
+
+		ctx.save();
+
+		//draw current level, blue bar
+		ctx.translate(0,maxl-current);
+		ctx.fillStyle="blue";
+		ctx.fillRect(stx, sty, bw-4, current);
+
+		ctx.restore();
+	}
+	
+	function init()
+	{
+		drawCurrent();
+		drawText();
+
+		if (dy > 0)
+		{
+			ctx.save();
+			ctx.translate(0, maxl-current);
+			dy = Math.min(maxl-current, dy);
+			animateUp(dy, current);
+			current+=dy;
+		}
+		else
+		if (dy < 0)
+		{
+			ctx.save();
+			ctx.translate(0, maxl-current-1);
+			dy = Math.max(-current, dy);
+			animateDown(-dy, current);
+			current+=dy;
+		}
+		dy = 0;
+	}
+	
+	function changeit(change)
+	{
+		dy=change
+   		for (var i = 0; i < touts.length; i++)
+		{
+    			clearTimeout(touts[i]);
+		}
+		touts=[];
+   		ctx.setTransform(1, 0, 0, 1, 0, 0);
+   		init();
+  	}
   </script>
 </html>
