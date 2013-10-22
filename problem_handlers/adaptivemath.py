@@ -37,22 +37,23 @@ from models import Proficiency
 
 class AdaptiveMath(adaptive_base_handler.AdaptiveBaseHandler):
 	__my_random__ = None
-	valid_types = ["math","parity"]
-	#TODO
-	#Refactor
-	#No chance for last problem
-	#move matrix_from_file to abh along with the imports
+	valid_types = ["math", "parity"]
+	# TODO
+	# Refactor
+	# No chance for last problem
+	# move matrix_from_file to abh along with the imports
 	
 
-	#get the information on problems from a file
+	# get the information on problems from a file
 	def matrix_from_file(self, question_type):
-		#this gets the level matrix from a text file have been told eval is dangerous
-		location='Adaptive_Lists\\'+ question_type +'.txt'
+		# this gets the level matrix from a text file have been told eval is dangerous
+		location = 'Adaptive_Lists/' + question_type + '.txt'
+		logging.warn(location)
 		s = open(location, 'r').read()
 		holder = eval(s)
-		self.level_matrix=holder['level']
-		self.weight_matrix=holder['weight']
-		self.default_rw=holder['default']
+		self.level_matrix = holder['level']
+		self.weight_matrix = holder['weight']
+		self.default_rw = holder['default']
 		
 		
 	#gets the max level of the question again used in baseclass
@@ -60,7 +61,7 @@ class AdaptiveMath(adaptive_base_handler.AdaptiveBaseHandler):
 		return 100
 	
 	#used by the basehelper to grade the students score also modifies the right_wrong array
-	def score_student_answer(self,question_type,question_data,student_answer):
+	def score_student_answer(self, question_type, question_data, student_answer):
 		wanted = question_data
 		answer = student_answer
 		

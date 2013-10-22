@@ -18,6 +18,20 @@
       <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
     <![endif]-->
   </head>
+  <div class="modal hide" id="lecturemodal">
+    <div id="lecturediv" class="modal-body no-overflow">
+      <iframe id="lectureiframe" width="420" height="315" src="//www.youtube.com/embed/oHg5SJYRHA0" frameborder="0" allowfullscreen></iframe>
+
+      <button type="button" class="close" data-dismiss="modal">x</button>
+    </div>
+  </div>
+  <div id="lectureblock" class="lectureblock">
+        <span class="inline-heading">Lecture Videos:</span>
+	<button onclick=videoInsert class="btn btn-primary video-btn" id="video1" data-toggle="modal" href="#lecturemodal"> 1) Error correction overview </button>
+	<button class="btn btn-primary video-btn" id="video2" data-toggle="modal" href="#lecturemodal"> 2) Error detection / Parity </button>
+	<button class="btn btn-primary video-btn" id="video3" data-toggle="modal" href="#lecturemodal"> 3) Hamming distance </button>
+	<button class="btn btn-primary video-btn" id="video4" data-toggle="modal" href="#lecturemodal"> 4) Correcting Errors </button>
+  </div>
   <canvas id="bar" width="80" height="272" style="background-color:white"></canvas>
   <body class="no-left-right-padding">
   {% block youtubeblock %}{% endblock %}
@@ -27,7 +41,7 @@
 	{% else %}
 	{% block bodyblock %}{% endblock %}
 	{% block questionblock %}{% endblock %}
-	<p>question type= {{question.typ}}</p>
+<!--	<p>question type= {{question.typ}}</p>
 	<p>question level= {{question.lev}}</p>
 	<p>question index= {{question.index}}</p>
 	<p>right wrong array= {{question.wr}}</p>
@@ -35,7 +49,7 @@
 	<p>question num2={{question.num2}}</p>
 	<p>question ans={{question.dist}}</p>
 	<p>question ans={{question.dist}}</p>
-	<p>holder={{submit.question_type}}</p>
+	<p>holder={{submit.question_type}}</p>  -->
 	{% endif %}
   </div>
   </br>
@@ -261,5 +275,10 @@
    		ctx.setTransform(1, 0, 0, 1, 0, 0);
    		init();
   	}
+
+	function videoInsert() {
+	   //$("#lectureiframe").
+	   //$("#lecturediv").
+	}
   </script>
 </html>
