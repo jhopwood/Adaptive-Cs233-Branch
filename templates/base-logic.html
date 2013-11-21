@@ -2,7 +2,7 @@
 {% block youtubeblock %}
     <div class="modal hide" id="youtubemodal">
       <div class="modal-body no-overflow">
-        <iframe id="player" width="560" height="315" src="http://www.youtube.com/embed/{{-youtube-}}?rel=0&wmode=Opaque&enablejsapi=1" frameborder="0"></iframe>
+        <iframe id="player" width="560" height="315" src="http://www.youtube.com/embed/-kApVH1Jj6Q" frameborder="0"></iframe>
         <button type="button" class="close" data-dismiss="modal">x</button>
       </div>
     </div>
@@ -12,7 +12,7 @@
       {% block lblock %}{% endblock %}
       {% block rblock %}{% endblock %}
       <div class="inline-div">
-        <p><a class="btn btn-large btn-primary submit-space" data-toggle="modal" href="#youtubemodal" >Help Video</a></p>
+        <p><a  onclick = "mywatch()" class="btn btn-large btn-primary submit-space" data-toggle="modal"   href="#youtubemodal" >Help Video</a></p>
         <p><a id="submit" class="btn btn-large submit-space">Submit</a></p>
         <p><span id="score"></span></p>
       </div>
@@ -21,13 +21,38 @@
 {% block jsblock %}
     <script type="text/javascript" src="http://www.youtube.com/player_api"></script>
     <script type="text/javascript">
+	//"http://www.youtube.com/embed/{{-youtube-}}?rel=0&wmode=Opaque&enablejsapi=1"
       var player;
-      function onYouTubePlayerAPIReady() {player = new YT.Player('player'); }
+      //function onYouTubePlayerAPIReady() {player = new YT.Player('player'); }
       $('#youtubemodal').on('hidden', function () {
         player.stopVideo();
       })
 
       $(document).ready(checkSubmit(false));
+	  var mywatch = function() {
+		var starttime;
+		var endtime;
+		var player = new YT.Player('player', { events:{      
+        'onStateChange': function (event)
+        {
+            if (event.data == YT.PlayerState.PLAYING){  
+				$.post('/YTInfo',{s:"dogs",ppe:10,student:{{- submit.magic -}},ct:player.getCurrentTime()});
+			}
+            else if (event.data == YT.PlayerState.PAUSED){ 
+				//alert (player.getCurrentTime()); 
+				$.post('/YTInfo',{s:"dogs",ppe:11,student:{{- submit.magic -}},ct:player.getCurrentTime()});
+				//keep track of when they paused and where they started.
+			}
+            else if (event.data == YT.PlayerState.ENDED){                
+                         ppe+=1;
+						// endtime=player2.getCurrentTime();
+						 $.post('/YTInfo',{s:"dogs",ppe:12,student:{{- submit.magic -}},ct:player.getCurrentTime()});
+			}
+        }
+       }});
+            
+	  }
+	 
       var problem = location.pathname;
       submit_url = problem + "?l={{- submit.level -}}&student={{- submit.magic -}}&problem_id={{- submit.problem_id -}}&f={{- submit.family -}}&st={{- submit.score_type -}}";
       

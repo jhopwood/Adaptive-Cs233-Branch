@@ -29,5 +29,12 @@ class TrueFalseQuestion(db.Model):
 	question = db.StringProperty(required=True)
 	answer = db.StringProperty(required=True)
 	explanation = db.StringProperty(required=True)
+	
+class YTInfo(db.Model):
+	student_magic_number = db.StringProperty(required=True)
+	time = db.DateTimeProperty(auto_now_add=True)
+	play_pause_end =db.IntegerProperty(required=True)
+	subject = db.StringProperty(required=True)
+	currenttime=db.StringProperty(required=True)
 
 

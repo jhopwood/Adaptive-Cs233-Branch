@@ -35,6 +35,7 @@ import time
 # import iclicker
 
 from models import Submission
+from models import YTInfo
 
 
 
@@ -158,7 +159,16 @@ class Download(base_handler.BaseHandler):
        submissions_objects.append({"type":submission.type, "level":submission.level, "id":submission.problem_id, "score":submission.score, "answered_on":utc, "answer":submission.answer})
     blob = json.dumps(submissions_objects)
     self.response.out.write(blob)
-
+class youtubeinfo(base_handler.BaseHandler):
+  def post(self):
+	magic = self.request.get('student')
+	play_pause_end = base_handler.int_convert(self.request.get('ppe'), 2)
+	subject = self.request.get('s')
+	currtime= self.request.get('ct')
+	logging.warn("ytinfo: %s %s %s %s" % (magic, play_pause_end, subject, currtime))
+	ytinfo = YTInfo(play_pause_end = play_pause_end, subject = subject, student_magic_number = magic,currenttime=currtime)
+	ytinfo.put()
+  def get(self): self.post()
 
     
 
@@ -190,6 +200,7 @@ app = webapp2.WSGIApplication([('/', MainHandler),
                                ('/delay/(.*)', delay.Delay),
                                ('/build/(.*)', build.Build),
 							   ('/adaptive/(.*)', adaptivemath.AdaptiveMath),
-							   ('/true_false/(.*)', true_false.TrueFalse)
+							   ('/true_false/(.*)', true_false.TrueFalse),
+							   ('/YTInfo', youtubeinfo)
                                ],
                               debug=True)
